@@ -12,7 +12,7 @@ export const setupApp = (app: Express) => {
     app.delete("/hometask_01/api/testing/all-data", ((req, res) => {
         db.videos = [];
         // Отправка статуса
-        res.status(204).send("All data is deleted");
+        res.sendStatus(204);
     }));
     app.get("/", (req, res) => {
         res.status(200).send("hello world!!!");

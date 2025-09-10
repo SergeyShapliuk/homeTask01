@@ -91,7 +91,7 @@ videoRouter.post("", ((req, res) => {
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: new Date().toISOString(),
-        availableResolutions: availableResolutions.filter(res => VALID_RESOLUTIONS.includes(res))
+        availableResolutions
 
     };
 
