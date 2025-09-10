@@ -6,7 +6,7 @@ import {db} from "./db";
 export const setupApp = (app: Express) => {
     app.use(express.json()); // middleware для парсинга JSON в теле запроса
 
-    app.use("/hometask_01/api/videos", videoRouter);  // Подключаем роутеры
+    app.use("/videos", videoRouter);  // Подключаем роутеры
 
     // основной роут
     app.delete("/hometask_01/api/testing/all-data", ((req, res) => {
