@@ -84,7 +84,7 @@ videoRouter.post("", (req, res) => {
         id: Date.now(),
         title: title.trim(),
         author: author.trim(),
-        canBeDownloaded: true,
+        canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: new Date(Date.now() + 86400000).toISOString(),
