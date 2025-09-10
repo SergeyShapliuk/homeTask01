@@ -21,51 +21,48 @@ videoRouter.get("/:id", ((req, res) => {
     res.status(200).send(video);
 }));
 
-videoRouter.post("", ((req, res) => {
-    console.log(req, res);
-    const {title, author, availableResolutions} = req.body;
+videoRouter.post("", (req, res) => {
+    const { title, author, availableResolutions } = req.body;
     const errors: { message: string; field: string }[] = [];
 
-    // Проверка title
-    if (!title || typeof title !== "string") {
-        errors.push({message: "Title is required and must be a string", field: "title"});
-    }
-    if (title.trim()) {
-        const trimmedTitle = title.trim();
+// --- Проверка title ---
+    if (typeof title !== "string") {
+        errors.push({ message: "Title is required and must be a string", field: "title" });
+    } else {
+        const trimmedTitle: string = (title as string).trim();
         if (trimmedTitle.length === 0) {
-            errors.push({message: "Title cannot be empty", field: "title"});
+            errors.push({ message: "Title cannot be empty", field: "title" });
         } else if (trimmedTitle.length > 40) {
-            errors.push({message: "Title must be less than 40 characters", field: "title"});
+            errors.push({ message: "Title must be less than 40 characters", field: "title" });
         }
     }
 
-    // Проверка author
-    if (!author || typeof author !== "string") {
-        errors.push({message: "Title is required and must be a string", field: "author"});
-    }
-    if (author.trim()) {
-        const trimmedAuthor = author.trim();
+// --- Проверка author ---
+    if (typeof author !== "string") {
+        errors.push({ message: "Author is required and must be a string", field: "author" });
+    } else {
+        const trimmedAuthor: string = (author as string).trim();
         if (trimmedAuthor.length === 0) {
-            errors.push({message: "Author cannot be empty", field: "author"});
+            errors.push({ message: "Author cannot be empty", field: "author" });
         } else if (trimmedAuthor.length > 20) {
-            errors.push({message: "Author must be less than 40 characters", field: "author"});
+            errors.push({ message: "Author must be less than 20 characters", field: "author" });
         }
     }
 
-    // Проверка availableResolutions (массив строк)
+
+    // --- Проверка availableResolutions ---
     if (availableResolutions === undefined || availableResolutions === null) {
-        errors.push({message: "AvailableResolutions is required", field: "availableResolutions"});
+        errors.push({ message: "AvailableResolutions is required", field: "availableResolutions" });
     } else if (!Array.isArray(availableResolutions)) {
-        errors.push({message: "AvailableResolutions must be an array", field: "availableResolutions"});
+        errors.push({ message: "AvailableResolutions must be an array", field: "availableResolutions" });
     } else if (availableResolutions.length === 0) {
-        errors.push({message: "At least one resolution is required", field: "availableResolutions"});
+        errors.push({ message: "At least one resolution is required", field: "availableResolutions" });
     } else {
         for (const resolution of availableResolutions) {
             if (typeof resolution !== "string") {
-                errors.push({message: "Each resolution must be a string", field: "availableResolutions"});
+                errors.push({ message: "Each resolution must be a string", field: "availableResolutions" });
                 break;
             }
-            // Приведение типа и проверка
             const resolutionTyped = resolution as Resolution;
             if (!VALID_RESOLUTIONS.includes(resolutionTyped)) {
                 errors.push({
@@ -77,12 +74,12 @@ videoRouter.post("", ((req, res) => {
         }
     }
 
-    // Если есть ошибки - возвращаем их
+    // --- Если есть ошибки ---
     if (errors.length > 0) {
-        return res.status(400).send({errorsMessages: errors});
+        return res.status(400).send({ errorsMessages: errors });
     }
 
-    // Все проверки пройдены
+    // --- Успех ---
     const newVideo = {
         id: Date.now(),
         title: title.trim(),
@@ -90,15 +87,14 @@ videoRouter.post("", ((req, res) => {
         canBeDownloaded: true,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: new Date(Date.now() + 86400000).toISOString(),
         availableResolutions
-
     };
 
-    // Добавляем в базу данных и возвращаем результат
     db.videos.push(newVideo);
-    res.status(201).send(newVideo);
-}));
+    return res.status(201).send(newVideo);
+});
+
 
 videoRouter.put("/:id", ((req, res) => {
     const {id} = req.params;
