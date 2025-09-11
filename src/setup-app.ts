@@ -15,7 +15,7 @@ export const setupApp = (app: Express) => {
         res.sendStatus(204);
     }));
     app.get("/", (req, res) => {
-        res.status(200).send("hello world!!!");
+        res.status(200).send("Hello world!");
     });
 
     return app;

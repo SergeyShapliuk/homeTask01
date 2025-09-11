@@ -12,7 +12,7 @@ export type NewVideo = {
     minAgeRestriction: null,
     createdAt: string,
     publicationDate: string,
-    availableResolutions
+    availableResolutions: string[];
 }
 
 export const db: DB = {
