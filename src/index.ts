@@ -1,5 +1,5 @@
-import express from "express";
-import { setupApp } from "./setup-app";
+import express from 'express';
+import { setupApp } from './setup-app';
 
 // создание приложения
 export const app = express();
@@ -10,5 +10,5 @@ const PORT = process.env.PORT || 5001;
 
 // запуск приложения
 app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`);
+  console.log(`Example app listening on port ${PORT}`);
 });

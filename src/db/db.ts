@@ -1,9 +1,5 @@
-import {DB} from "../core/types/db";
-
-
-
+import { DB } from '../core/types/db';
 
 export const db: DB = {
-    videos: []
+  videos: [],
 };
-
