@@ -1,32 +1,40 @@
-import { body } from 'express-validator';
+import {body} from "express-validator";
 
 // const URL_PATTERN = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
-const titleValidation = body('title')
-  .isString()
-  .withMessage('name should be string')
-  .trim()
-  .isLength({ min: 0, max: 30 })
-  .withMessage('Length of name is not correct');
+const titleValidation = body("title")
+    .isString()
+    .withMessage("name should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("title is required")
+    .isLength({max: 30})
+    .withMessage("Length of name is not correct");
 
-const shortDescriptionValidation = body('shortDescription')
-  .isString()
-  .withMessage('shortDescription should be string')
-  .trim()
-  .isLength({ min: 0, max: 100 })
-  .withMessage('Length of name is not correct');
+const shortDescriptionValidation = body("shortDescription")
+    .isString()
+    .withMessage("shortDescription should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("shortDescription is required")
+    .isLength({max: 100})
+    .withMessage("Length of name is not correct");
 
-const contentValidation = body('content')
-  .isString()
-  .withMessage('content should be string')
-  .trim()
-  .isLength({ min: 0, max: 1000 })
-  .withMessage('Length of name is not correct');
+const contentValidation = body("content")
+    .isString()
+    .withMessage("content should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("content is required")
+    .isLength({max: 1000})
+    .withMessage("Length of name is not correct");
 
-const blogIdValidation = body('blogId')
-  .isString()
-  .withMessage('blogId should be string')
-  .trim();
+const blogIdValidation = body("blogId")
+    .isString()
+    .withMessage("blogId should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("blogId is required");
 // .matches(URL_PATTERN)
 // .withMessage("URL должен быть в формате: https://example.com или https://sub.example.com/path");
 // const phoneNumberValidation = body('phoneNumber')
@@ -97,8 +105,8 @@ const blogIdValidation = body('blogId')
 //     });
 
 export const postInputDtoValidation = [
-  titleValidation,
-  shortDescriptionValidation,
-  contentValidation,
-  blogIdValidation,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    blogIdValidation
 ];
