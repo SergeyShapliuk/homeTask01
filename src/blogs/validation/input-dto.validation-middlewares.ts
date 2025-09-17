@@ -1,32 +1,38 @@
-import { body } from 'express-validator';
+import {body} from "express-validator";
 
 const URL_PATTERN =
-  /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
+    /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
-const nameValidation = body('name')
-  .isString()
-  .withMessage('name should be string')
-  .trim()
-  .isLength({ min: 0, max: 15 })
-  .withMessage('Length of name is not correct');
+const nameValidation = body("name")
+    .isString()
+    .withMessage("name should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("Name is required")
+    .isLength({max: 15})
+    .withMessage("Length of name is not correct");
 
-const descriptionValidation = body('description')
-  .isString()
-  .withMessage('name should be string')
-  .trim()
-  .isLength({ min: 0, max: 500 })
-  .withMessage('Length of name is not correct');
+const descriptionValidation = body("description")
+    .isString()
+    .withMessage("name should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("description is required")
+    .isLength({max: 500})
+    .withMessage("Length of name is not correct");
 
-const websiteUrlValidation = body('websiteUrl')
-  .isString()
-  .withMessage('name should be string')
-  .trim()
-  .isLength({ min: 0, max: 100 })
-  .withMessage('Length of name is not correct')
-  .matches(URL_PATTERN)
-  .withMessage(
-    'URL должен быть в формате: https://example.com или https://sub.example.com/path',
-  );
+const websiteUrlValidation = body("websiteUrl")
+    .isString()
+    .withMessage("name should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("websiteUrl is required")
+    .isLength({max: 100})
+    .withMessage("Length of name is not correct")
+    .matches(URL_PATTERN)
+    .withMessage(
+        "URL должен быть в формате: https://example.com или https://sub.example.com/path"
+    );
 // const phoneNumberValidation = body('phoneNumber')
 //     .isString()
 //     .withMessage('phoneNumber should be string')
@@ -95,15 +101,15 @@ const websiteUrlValidation = body('websiteUrl')
 //     });
 
 export const blogInputDtoValidation = [
-  nameValidation,
-  descriptionValidation,
-  websiteUrlValidation,
-  // phoneNumberValidation,
-  // emailValidation,
-  // vehicleMakeValidation,
-  // vehicleModelValidation,
-  // vehicleYearValidation,
-  // vehicleLicensePlateValidation,
-  // vehicleDescriptionValidation,
-  // vehicleFeaturesValidation,
+    nameValidation,
+    descriptionValidation,
+    websiteUrlValidation
+    // phoneNumberValidation,
+    // emailValidation,
+    // vehicleMakeValidation,
+    // vehicleModelValidation,
+    // vehicleYearValidation,
+    // vehicleLicensePlateValidation,
+    // vehicleDescriptionValidation,
+    // vehicleFeaturesValidation,
 ];
