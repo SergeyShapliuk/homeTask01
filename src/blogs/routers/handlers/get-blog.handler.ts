@@ -30,6 +30,6 @@ export async function getBlogHandler(req: Request, res: Response) {
         const blogViewModel = mapToBlogViewModel(blog);
         res.status(HttpStatus.Ok).send(blogViewModel);
     } catch (e) {
-
+        res.sendStatus(HttpStatus.InternalServerError);
     }
 }

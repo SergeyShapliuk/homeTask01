@@ -30,6 +30,6 @@ export async function getPostHandler(req: Request, res: Response) {
         const postViewModel = mapToPostViewModel(post);
         res.status(HttpStatus.Ok).send(postViewModel);
     } catch (e) {
-
+        res.sendStatus(HttpStatus.InternalServerError);
     }
 }
