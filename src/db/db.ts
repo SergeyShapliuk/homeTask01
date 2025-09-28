@@ -3,7 +3,6 @@ import {Video} from "../videos/types/video";
 import {Blog} from "../blogs/types/blog";
 import {Post} from "../posts/types/post";
 import {SETTINGS} from "../core/settings/settings";
-import {DB} from "../core/types/db";
 
 
 const VIDEOS_COLLECTION_NAME = "videos";
@@ -42,8 +41,8 @@ export async function stopDb() {
     }
     await client.close();
 }
-export const db: DB = {
-    videos: [],
-    blogs: [],
-    posts: []
-};
+// export const db: DB = {
+//     videos: [],
+//     blogs: [],
+//     posts: []
+// };
