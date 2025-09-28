@@ -3,31 +3,37 @@ import { setupApp } from './setup-app';
 import {SETTINGS} from "./core/settings/settings";
 import {runDB} from "./db/db";
 
-// Создаем приложение ВНЕ функции
-const app = express();
-setupApp(app);
+let isInitialized = false;
+let appInstance: express.Application;
 
-const bootstrap = async () => {
-  await runDB(SETTINGS.MONGO_URL);
+export const initApp = async () => {
+  if (!isInitialized) {
+    const app = express();
+    setupApp(app);
 
-  // Локальный запуск сервера
-  if (process.env.NODE_ENV !== 'production') {
-    const PORT = SETTINGS.PORT;
-    app.listen(PORT, () => {
-      console.log(`Example app listening on port ${PORT}`);
-    });
+    console.log('🔄 Connecting to database...');
+    await runDB(SETTINGS.MONGO_URL);
+    console.log('✅ Database connected');
+
+    appInstance = app;
+    isInitialized = true;
+
+    // Локальный запуск
+    if (process.env.NODE_ENV !== 'production') {
+      const PORT = SETTINGS.PORT;
+      app.listen(PORT, () => {
+        console.log(`🚀 Server listening on port ${PORT}`);
+      });
+    }
   }
 
-  return app;
+  return appInstance;
 };
 
-// ✅ Явно экспортируем приложение
-export default app;
-
-// ✅ Экспортируем функцию инициализации
-export const init = bootstrap;
+// ✅ Экспортируем инициализированное приложение
+export default initApp();
 
 // Локальный запуск
 if (process.env.NODE_ENV !== 'production') {
-  bootstrap();
+  initApp().catch(console.error);
 }
