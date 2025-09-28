@@ -1,8 +1,9 @@
 export type Post = {
-  id: string;
+  // id: string;
   title: string;
   shortDescription: string;
   content: string;
   blogId: string;
   blogName: string;
+  createdAt: Date;
 };

@@ -27,7 +27,7 @@ const websiteUrlValidation = body("websiteUrl")
     .trim()
     .notEmpty()
     .withMessage("websiteUrl is required")
-    .isLength({max: 100})
+    .isLength({min: 3, max: 100})
     .withMessage("Length of name is not correct")
     .matches(URL_PATTERN)
     .withMessage(

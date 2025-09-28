@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Uber API
+  title: Uber APId
   version: 1.0.0
   description: Uber API documentation
 
