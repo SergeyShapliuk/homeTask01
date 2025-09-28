@@ -14,7 +14,7 @@ export const blogsRepository = {
     //   return db.blogs.find((v) => +v.id === id) ?? null;
     // },
     async findById(id: string): Promise<WithId<Blog> | null> {
-        return blogCollection.findOne({_id: new Object(id)});
+        return blogCollection.findOne({_id: new ObjectId(id)});
     },
 
     // create(newBlog: Blog): Blog {

@@ -1,9 +1,8 @@
 import {Post} from "../types/post";
-import {blogCollection, db, postCollection} from "../../db/db";
+import {postCollection} from "../../db/db";
 import {PostInputDto} from "../dto/post.input-dto";
 import {ObjectId, WithId} from "mongodb";
-import {Blog} from "../../blogs/types/blog";
-import {BlogInputDto} from "../../blogs/dto/blog.input-dto";
+
 
 export const postsRepository = {
     // findAll(): Post[] {
@@ -17,7 +16,7 @@ export const postsRepository = {
     //   return db.posts.find((v) => +v.id === id) ?? null;
     // },
     async findById(id: string): Promise<WithId<Post> | null> {
-        return postCollection.findOne({_id: new Object(id)});
+        return postCollection.findOne({_id: new ObjectId(id)});
     },
 
     // create(newPost: Post): Post {
