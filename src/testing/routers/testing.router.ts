@@ -1,11 +1,20 @@
-import { Router } from 'express';
-import { db } from '../../db/db';
+import { Request, Response, Router } from 'express';
 import { HttpStatus } from '../../core/types/http-ststuses';
+import {blogCollection, postCollection} from "../../db/db";
 
 export const testingRouter = Router({});
 
-testingRouter.delete('/all-data', (req, res) => {
-  db.videos = [];
-  // Отправка статуса
+// testingRouter.delete('/all-data', (req, res) => {
+//   db.videos = [];
+//   // Отправка статуса
+//   res.sendStatus(HttpStatus.NoContent);
+// });
+
+testingRouter.delete('/all-data', async (req: Request, res: Response) => {
+  //truncate db
+  await Promise.all([
+    blogCollection.deleteMany(),
+    postCollection.deleteMany(),
+  ]);
   res.sendStatus(HttpStatus.NoContent);
 });
