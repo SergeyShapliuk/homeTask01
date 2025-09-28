@@ -37,7 +37,7 @@ export async function createBlogHandler(
             name: name.trim(),
             description: description.trim(),
             websiteUrl: websiteUrl.trim(),
-            createdAt: new Date(),
+            createdAt: new Date().toISOString(),
             isMembership: false
         };
         const createdBlog = await blogsRepository.create(newBlog);

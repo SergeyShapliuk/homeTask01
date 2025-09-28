@@ -43,7 +43,7 @@ export async function createPostHandler(
             content: content.trim(),
             blogId: blogId.trim(),
             blogName: "",
-            createdAt: new Date()
+            createdAt: new Date().toISOString()
         };
 
         const createdPost = await postsRepository.create(newPost);
