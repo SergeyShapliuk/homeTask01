@@ -36,7 +36,7 @@ export async function deleteBlogHandler(
     // await blogsRepository.delete(id);
 
     // Отправка статуса 204 (No Content) без тела ответа
-    res.status(HttpStatus.NoContent).send('No Content');
+    res.status(HttpStatus.NoContent);
   } catch (e) {
     errorsHandler(e, res);
   }
