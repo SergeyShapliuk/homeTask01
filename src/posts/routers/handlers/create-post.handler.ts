@@ -1,10 +1,9 @@
 import {Request, Response} from "express";
 import {HttpStatus} from "../../../core/types/http-ststuses";
-import {postsRepository} from "../../repositories/posts.repository";
-import {Post} from "../../types/post";
-import {BlogInputDto} from "../../../blogs/dto/blog.input-dto";
-import {mapToPostViewModel} from "../mappers/map-to-post-view-model.util";
-import {PostInputDto} from "../../dto/post.input-dto";
+import {PostCreateInput} from "../input/post-create.input";
+import {postsService} from "../../application/posts.service";
+import {mapToPostOutputUtil} from "../mappers/map-to-post-output.util";
+import {errorsHandler} from "../../../core/errors/errors.handler";
 
 // export function createPostHandler(
 //     req: Request<{}, {}, PostInputDto>,
@@ -30,26 +29,31 @@ import {PostInputDto} from "../../dto/post.input-dto";
 // }
 
 export async function createPostHandler(
-    req: Request<{}, {}, PostInputDto>,
+    req: Request<{}, {}, PostCreateInput>,
     res: Response
 ) {
-    const {title, shortDescription, content, blogId} = req.body;
+    // const {title, shortDescription, content, blogId} = req.body;
 
     // --- Успех ---
     try {
-        const newPost: Post = {
-            title: title.trim(),
-            shortDescription: shortDescription.trim(),
-            content: content.trim(),
-            blogId: blogId.trim(),
-            blogName: "",
-            createdAt: new Date().toISOString()
-        };
+        // const createdPostId = await postsService.create(req.body.data.attributes);
+        const createdPostId = await postsService.create(req.body);
 
-        const createdPost = await postsRepository.create(newPost);
-        const postViewModel = mapToPostViewModel(createdPost);
-        res.status(HttpStatus.Created).send(postViewModel);
+        const createdPost = await postsService.findByIdOrFail(createdPostId);
+        // const newPost: Post = {
+        //     title: title.trim(),
+        //     shortDescription: shortDescription.trim(),
+        //     content: content.trim(),
+        //     blogId: blogId.trim(),
+        //     blogName: "",
+        //     createdAt: new Date().toISOString()
+        // };
+
+        // const createdPost = await postsRepository.create(newPost);
+        // const postViewModel = mapToPostViewModel(createdPost);
+        const postOutput = mapToPostOutputUtil(createdPost);
+        res.status(HttpStatus.Created).send(postOutput);
     } catch (e) {
-        res.sendStatus(HttpStatus.InternalServerError);
+        errorsHandler(e, res);
     }
 }

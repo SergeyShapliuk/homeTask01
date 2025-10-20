@@ -1,7 +1,8 @@
 import {Request, Response} from "express";
 import {HttpStatus} from "../../../core/types/http-ststuses";
 import {postsRepository} from "../../repositories/posts.repository";
-import {mapToPostViewModel} from "../mappers/map-to-post-view-model.util";
+import {mapToPostOutputUtil} from "../mappers/map-to-post-output.util";
+import {errorsHandler} from "../../../core/errors/errors.handler";
 
 // export function getPostHandler(req: Request, res: Response) {
 //   const id = parseInt(req.params.id);
@@ -17,19 +18,20 @@ import {mapToPostViewModel} from "../mappers/map-to-post-view-model.util";
 //   res.status(HttpStatus.Ok).send(blog);
 // }
 
-export async function getPostHandler(req: Request, res: Response) {
+export async function getPostHandler(req: Request<{ id: string }>, res: Response) {
     try {
         const id = req.params.id;
 
         // Поиск блога по ID
-        const post = await postsRepository.findById(id);
-        if (!post) {
-            res.status(HttpStatus.NotFound).send("Not Found");
-            return;
-        }
-        const postViewModel = mapToPostViewModel(post);
-        res.status(HttpStatus.Ok).send(postViewModel);
+        const post = await postsRepository.findByIdOrFail(id);
+        // if (!post) {
+        //     res.status(HttpStatus.NotFound).send("Not Found");
+        //     return;
+        // }
+        const postOutput = mapToPostOutputUtil(post);
+
+        res.status(HttpStatus.Ok).send(postOutput);
     } catch (e) {
-        res.sendStatus(HttpStatus.InternalServerError);
+        errorsHandler(e, res);
     }
 }

@@ -1,34 +1,139 @@
-import {Post} from "../types/post";
 import {postCollection} from "../../db/db";
-import {PostInputDto} from "../dto/post.input-dto";
 import {ObjectId, WithId} from "mongodb";
+import {PostQueryInput} from "../routers/input/post-query.input";
+import {PostAttributes} from "../application/dtos/post-attributes";
+import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
+import {Post} from "../domain/post";
 
 
 export const postsRepository = {
     // findAll(): Post[] {
     //   return db.posts;
     // },
-    async findAll(): Promise<WithId<Post>[]> {
-        return postCollection.find().toArray();
+    // async findAll(): Promise<WithId<Post>[]> {
+    //     return postCollection.find().toArray();
+    // },
+    async findMany(
+        queryDto: PostQueryInput
+    ): Promise<{ items: WithId<Post>[]; totalCount: number }> {
+        const {
+            pageNumber,
+            pageSize,
+            sortBy,
+            sortDirection,
+            searchNameTerm
+            // searchDriverEmailTerm,
+            // searchVehicleMakeTerm,
+        } = queryDto;
+
+        const skip = (pageNumber - 1) * pageSize;
+        const filter: any = {};
+
+        if (searchNameTerm) {
+            filter.name = {$regex: searchNameTerm, $options: "i"};
+        }
+
+        // if (searchDriverEmailTerm) {
+        //     filter.email = { $regex: searchDriverEmailTerm, $options: 'i' };
+        // }
+        //
+        // if (searchVehicleMakeTerm) {
+        //     filter['vehicle.make'] = { $regex: searchVehicleMakeTerm, $options: 'i' };
+        // }
+
+        const items = await postCollection
+            .find(filter)
+            .sort({[sortBy]: sortDirection})
+            .skip(skip)
+            .limit(pageSize)
+            .toArray();
+
+        const totalCount = await postCollection.countDocuments(filter);
+
+        return {items, totalCount};
     },
+
 
     // findById(id: number): Post | null {
     //   return db.posts.find((v) => +v.id === id) ?? null;
     // },
+    async findPostsByBlog(
+        paginationDto: PostQueryInput,
+        blogId: string
+    ): Promise<{ items: WithId<Post>[]; totalCount: number }> {
+
+        const {pageNumber, pageSize, sortBy, sortDirection} = paginationDto;
+        // ПРЕОБРАЗУЙТЕ СТРОКИ В ЧИСЛА
+        const pageNum = parseInt(pageNumber as string);
+        const pageSz = parseInt(pageSize as string);
+
+        const filter = { 'blogId': blogId };
+        console.log('paginationDto:', paginationDto);
+        console.log('pageNumber:', pageNumber, 'pageSize:', pageSize);
+        const skip = (pageNum - 1) * pageSize;
+
+        const [items, totalCount] = await Promise.all([
+            postCollection
+                .find(filter)
+                .sort({[sortBy]: sortDirection})
+                .skip(skip)
+                .limit(pageSz)
+                .toArray(),
+            postCollection.countDocuments(filter)
+        ]);
+        console.log('findPostsByBlogfilter',items)
+        return {items, totalCount};
+    },
+
     async findById(id: string): Promise<WithId<Post> | null> {
         return postCollection.findOne({_id: new ObjectId(id)});
     },
 
+    async findByIdOrFail(id: string): Promise<WithId<Post>> {
+        const res = await postCollection.findOne({_id: new ObjectId(id)});
+
+        if (!res) {
+            throw new RepositoryNotFoundError("Post not exist");
+        }
+        return res;
+    },
+
+    async findByBlogIdOrFail(blogId: string): Promise<WithId<Post>> {
+        const res = await postCollection.findOne({_blogId: new ObjectId(blogId)});
+
+        if (!res) {
+            throw new RepositoryNotFoundError("Post not exist");
+        }
+        return res;
+    },
     // create(newPost: Post): Post {
     //   db.posts.push(newPost);
     //
     //   return newPost;
     // },
-    async create(newPost: Post): Promise<WithId<Post>> {
+    async create(newPost: Post): Promise<string> {
         const insertResult = await postCollection.insertOne(newPost);
-        return {...newPost, _id: insertResult.insertedId};
+        return insertResult.insertedId.toString();
     },
 
+    // async createPostByBlog(id: string, postData: Omit<Post, "blogId" | "_id">): Promise<string> {
+    //     const updateResult = await postCollection.insertOne(
+    //         {
+    //             _id: new ObjectId(id)
+    //         },
+    //         {
+    //             $set: {
+    //                 newBlog
+    //             }
+    //         }
+    //     );
+    //
+    //     if (updateResult.matchedCount < 1) {
+    //         throw new Error("Ride not exist");
+    //     }
+    //
+    //     return;
+    // },
     // update(id: number, newPost: PostInputDto): void {
     //   const post = db.posts.find((v) => +v.id === id);
     //
@@ -40,7 +145,7 @@ export const postsRepository = {
     //
     //   return;
     // },
-    async update(id: string, newPost: PostInputDto): Promise<void> {
+    async update(id: string, newPost: PostAttributes): Promise<void> {
         const updateResult = await postCollection.updateOne(
             {
                 _id: new ObjectId(id)
@@ -51,7 +156,7 @@ export const postsRepository = {
         );
 
         if (updateResult.matchedCount < 1) {
-            throw new Error("Post not exist");
+            throw new RepositoryNotFoundError("Post not exist");
         }
         return;
     },
@@ -72,7 +177,7 @@ export const postsRepository = {
         });
 
         if (deleteResult.deletedCount < 1) {
-            throw new Error("Post not exist");
+            throw new RepositoryNotFoundError("Post not exist");
         }
         return;
     }

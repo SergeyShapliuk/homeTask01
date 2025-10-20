@@ -1,11 +1,12 @@
 import {Collection, Db, MongoClient} from "mongodb";
-import {Video} from "../videos/types/video";
-import {Blog} from "../blogs/types/blog";
-import {Post} from "../posts/types/post";
+
 import {SETTINGS} from "../core/settings/settings";
+import {Blog} from "../blogs/domain/blog";
+import {Post} from "../posts/domain/post";
+import {DBVideo} from "../core/types/dbVideo";
 
 
-const VIDEOS_COLLECTION_NAME = "videos";
+// const VIDEOS_COLLECTION_NAME = "videos";
 const BLOGS_COLLECTION_NAME = "blogs";
 const POSTS_COLLECTION_NAME = "posts";
 
@@ -41,8 +42,9 @@ export async function stopDb() {
     }
     await client.close();
 }
-// export const db: DB = {
-//     videos: [],
-//     blogs: [],
-//     posts: []
-// };
+
+export const dbVideo: DBVideo = {
+    videos: [],
+    // blogs: [],
+    // posts: []
+};

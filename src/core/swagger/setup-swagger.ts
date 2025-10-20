@@ -11,7 +11,7 @@ const swaggerOptions = {
       description: 'uber API',
     },
   },
-  apis: ['./src/**/*.swagger.yml'],
+  apis: ['./src/blogs/docs/*.swagger.yml'],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
