@@ -4,6 +4,8 @@ import { PostQueryInput } from '../routers/input/post-query.input';
 import { PostAttributes } from '../application/dtos/post-attributes';
 import { RepositoryNotFoundError } from '../../core/errors/repository-not-found.error';
 import { Post } from '../domain/post';
+import {PaginationAndSorting} from "../../core/types/pagination-and-sorting";
+import {BlogSortField} from "../../blogs/routers/input/blog-sort-field";
 
 export const postsRepository = {
   // findAll(): Post[] {
@@ -56,8 +58,8 @@ export const postsRepository = {
   //   return db.posts.find((v) => +v.id === id) ?? null;
   // },
   async findPostsByBlog(
-    paginationDto: PostQueryInput,
-    blogId: string,
+      paginationDto: PaginationAndSorting<BlogSortField>,
+      blogId: string
   ): Promise<{ items: WithId<Post>[]; totalCount: number }> {
     const { pageNumber, pageSize, sortBy, sortDirection } = paginationDto;
     // ПРЕОБРАЗУЙТЕ СТРОКИ В ЧИСЛА
@@ -77,7 +79,6 @@ export const postsRepository = {
         .toArray(),
       postCollection.countDocuments(filter),
     ]);
-    console.log('findPostsByBlogfilter', items);
     return { items, totalCount };
   },
 

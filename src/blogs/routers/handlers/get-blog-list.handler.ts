@@ -21,8 +21,11 @@ export async function getBlogListHandler(
       includeOptionals: true,
     }); //утилита для извечения трансформированных значений после валидатара
     //в req.query остаются сырые квери параметры (строки)
+
     const queryInput = setDefaultSortAndPaginationIfNotExist(sanitizedQuery);
     const { items, totalCount } = await blogsService.findMany(queryInput);
+
+    console.log('getBlogListHandler', queryInput);
     const blogsListOutput = mapToBlogListPaginatedOutput(items, {
       pageNumber: queryInput.pageNumber,
       pageSize: queryInput.pageSize,

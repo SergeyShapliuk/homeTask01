@@ -90,7 +90,7 @@ export const blogsRepository = {
     );
 
     if (updateResult.matchedCount < 1) {
-      throw new Error('Blog not exist');
+      throw new RepositoryNotFoundError('Blog not exist');
     }
     return;
   },

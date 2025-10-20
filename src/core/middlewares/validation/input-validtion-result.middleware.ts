@@ -40,8 +40,6 @@ export const inputValidationResultMiddleware = (
     res: Response,
     next: NextFunction
 ) => {
-    console.log("inputValidationResultMiddleware", req.params);
-    console.log("inputValidationResultMiddleware2", req.body);
     const errors = validationResult(req)
         .formatWith(formValidationError)
         .array({onlyFirstError: true});

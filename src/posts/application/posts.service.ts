@@ -9,6 +9,7 @@ import { PaginationAndSorting } from '../../core/types/pagination-and-sorting';
 import { PostSortField } from '../routers/input/post-sort-field';
 import { blogsRepository } from '../../blogs/repositories/blogs.repository';
 import { RepositoryNotFoundError } from '../../core/errors/repository-not-found.error';
+import {BlogSortField} from "../../blogs/routers/input/blog-sort-field";
 
 // export enum PostErrorCode {
 //     AlreadyFinished = 'RIDE_ALREADY_FINISHED',
@@ -22,8 +23,8 @@ export const postsService = {
   },
 
   async findPostsByBlog(
-    paginationDto: PaginationAndSorting<PostSortField>,
-    blogId: string,
+      paginationDto: PaginationAndSorting<BlogSortField>,
+      blogId: string
   ): Promise<{ items: WithId<Post>[]; totalCount: number }> {
     await blogsRepository.findByIdOrFail(blogId);
 
