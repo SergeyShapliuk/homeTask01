@@ -5,6 +5,7 @@ import { PostQueryInput } from '../input/post-query.input';
 import { postsService } from '../../application/posts.service';
 import { mapToPostListPaginatedOutput } from '../mappers/map-to-post-list-paginated-output.util';
 import { errorsHandler } from '../../../core/errors/errors.handler';
+import {HttpStatus} from "../../../core/types/http-ststuses";
 
 // export function getPostListHandler(req: Request, res: Response) {
 //   const blogs = postsRepository.findAll();
@@ -31,7 +32,7 @@ export async function getPostListHandler(
     });
     // const blogs = await postsRepository.findAll();
     // const postViewModels = blogs.map(mapToPostViewModel);
-    res.send(rideListOutput);
+    res.status(HttpStatus.Ok).send(rideListOutput);
   } catch (e) {
     errorsHandler(e, res);
   }
