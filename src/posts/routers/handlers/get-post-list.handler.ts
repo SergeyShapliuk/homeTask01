@@ -25,14 +25,14 @@ export async function getPostListHandler(
 
     const { items, totalCount } = await postsService.findMany(queryInput);
 
-    const rideListOutput = mapToPostListPaginatedOutput(items, {
+    const postListOutput = mapToPostListPaginatedOutput(items, {
       pageNumber: queryInput.pageNumber,
       pageSize: queryInput.pageSize,
       totalCount,
     });
     // const blogs = await postsRepository.findAll();
     // const postViewModels = blogs.map(mapToPostViewModel);
-    res.status(HttpStatus.Ok).send(rideListOutput);
+    res.status(HttpStatus.Ok).send(postListOutput);
   } catch (e) {
     errorsHandler(e, res);
   }
