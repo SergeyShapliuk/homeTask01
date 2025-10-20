@@ -5,6 +5,7 @@ import { mapToBlogListPaginatedOutput } from '../mappers/map-to-blog-list-pagina
 import { matchedData } from 'express-validator';
 import { setDefaultSortAndPaginationIfNotExist } from '../../../core/helpers/set-default-sort-and-pagination';
 import { errorsHandler } from '../../../core/errors/errors.handler';
+import {HttpStatus} from "../../../core/types/http-ststuses";
 
 // export function getBlogListHandler(req: Request, res: Response) {
 //   const blogs = blogsRepository.findAll();
@@ -28,7 +29,7 @@ export async function getBlogListHandler(
       totalCount,
     });
 
-    res.send(blogsListOutput);
+    res.status(HttpStatus.Ok).send(blogsListOutput);
   } catch (e) {
     errorsHandler(e, res);
   }

@@ -111,7 +111,7 @@ export const blogsRepository = {
     });
 
     if (deleteResult.deletedCount < 1) {
-      throw new Error('Blog not exist');
+      throw new RepositoryNotFoundError('Blog not exist');
     }
     return;
   },

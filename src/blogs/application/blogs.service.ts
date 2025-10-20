@@ -3,6 +3,7 @@ import {BlogAttributes} from "./dtos/blog-attributes";
 import {BlogQueryInput} from "../routers/input/blog-query.input";
 import {blogsRepository} from "../repositories/blogs.repository";
 import {Blog} from "../domain/blog";
+import {DomainError} from "../../core/errors/domain.error";
 
 // export enum PostErrorCode {
 //     AlreadyFinished = 'RIDE_ALREADY_FINISHED',
@@ -59,12 +60,11 @@ export const blogsService = {
     },
 
     async delete(id: string): Promise<void> {
-        await blogsRepository.findByIdOrFail(id);
 
-        // if (activeRide) {
+        // if (!blog) {
         //     throw new DomainError(
         //         `Driver has an active ride. Complete or cancel the ride first`,
-        //         DriverErrorCode.HasActiveRide,
+        //         DriverErrorCode.HasActiveRide
         //     );
         // }
 

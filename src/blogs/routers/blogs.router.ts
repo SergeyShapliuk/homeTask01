@@ -36,8 +36,6 @@ blogsRouter
         getBlogListHandler
     )
 
-    .get("/:id", idValidation, inputValidationResultMiddleware, getBlogHandler)
-
     .post(
         "",
         superAdminGuardMiddleware,
@@ -45,6 +43,8 @@ blogsRouter
         inputValidationResultMiddleware,
         createBlogHandler
     )
+
+    .get("/:id", idValidation, inputValidationResultMiddleware, getBlogHandler)
 
     .put(
         "/:id",

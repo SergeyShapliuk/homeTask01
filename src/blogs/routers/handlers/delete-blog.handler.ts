@@ -23,8 +23,10 @@ export async function deleteBlogHandler(
   req: Request<{ id: string }>,
   res: Response,
 ) {
+  console.log('deleteBlogHandler',req.params.id)
   try {
     const id = req.params.id;
+    console.log('deleteBlogHandler1',id)
     await blogsService.delete(id);
 
     // if (!blog) {
