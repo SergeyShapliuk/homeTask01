@@ -61,21 +61,20 @@ export const postsRepository = {
       paginationDto: PaginationAndSorting<BlogSortField>,
       blogId: string
   ): Promise<{ items: WithId<Post>[]; totalCount: number }> {
+
     const { pageNumber, pageSize, sortBy, sortDirection } = paginationDto;
-    // ПРЕОБРАЗУЙТЕ СТРОКИ В ЧИСЛА
-    const pageNum = parseInt(pageNumber as any);
-    const pageSz = parseInt(pageSize as any);
+    const skip = (pageNumber - 1) * pageSize;
 
     const filter = { blogId: blogId };
 
-    const skip = (pageNum - 1) * pageSize;
+
 
     const [items, totalCount] = await Promise.all([
       postCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })
         .skip(skip)
-        .limit(pageSz)
+        .limit(pageSize)
         .toArray(),
       postCollection.countDocuments(filter),
     ]);
