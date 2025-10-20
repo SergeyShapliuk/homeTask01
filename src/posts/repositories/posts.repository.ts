@@ -64,12 +64,11 @@ export const postsRepository = {
 
         const {pageNumber, pageSize, sortBy, sortDirection} = paginationDto;
         // ПРЕОБРАЗУЙТЕ СТРОКИ В ЧИСЛА
-        const pageNum = parseInt(pageNumber as string);
-        const pageSz = parseInt(pageSize as string);
+        const pageNum = parseInt(pageNumber as any);
+        const pageSz = parseInt(pageSize as any);
 
-        const filter = { 'blogId': blogId };
-        console.log('paginationDto:', paginationDto);
-        console.log('pageNumber:', pageNumber, 'pageSize:', pageSize);
+        const filter = {"blogId": blogId};
+
         const skip = (pageNum - 1) * pageSize;
 
         const [items, totalCount] = await Promise.all([
@@ -81,7 +80,7 @@ export const postsRepository = {
                 .toArray(),
             postCollection.countDocuments(filter)
         ]);
-        console.log('findPostsByBlogfilter',items)
+        console.log("findPostsByBlogfilter", items);
         return {items, totalCount};
     },
 

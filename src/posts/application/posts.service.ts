@@ -64,8 +64,8 @@ export const postsService = {
             throw new RepositoryNotFoundError(
                 `Driver has an active ride. Complete or cancel the ride first`
             );
-            return;
         }
+
         const newPost: Post = {
             title: dto.title,
             shortDescription: dto.shortDescription,
