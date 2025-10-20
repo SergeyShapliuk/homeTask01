@@ -1,12 +1,12 @@
 import express from 'express';
 import { setupApp } from './setup-app';
-import { SETTINGS } from "./core/settings/settings";
-import { runDB } from "./db/db";
+import {SETTINGS} from "./core/settings/settings";
+import {runDB} from "./db/db";
 
 let isInitialized = false;
 let appInstance: express.Application;
 
-export const initApp = async (): Promise<express.Application> => {
+export const initApp = async () => {
   if (!isInitialized) {
     const app = express();
     setupApp(app);
@@ -18,27 +18,22 @@ export const initApp = async (): Promise<express.Application> => {
     appInstance = app;
     isInitialized = true;
 
-    console.log('✅ App initialized');
+    // Локальный запуск
+    if (process.env.NODE_ENV !== 'production') {
+      const PORT = SETTINGS.PORT;
+      app.listen(PORT, () => {
+        console.log(`🚀 Server listening on port ${PORT}`);
+      });
+    }
   }
 
   return appInstance;
 };
 
-// ✅ Только экспортируем функцию, НЕ вызываем её
-export default initApp;
+// ✅ Экспортируем инициализированное приложение
+export default initApp();
 
-// ✅ Запуск сервера только в одном месте
-if (require.main === module) {
-  // Этот блок выполнится только при прямом запуске файла
-  initApp()
-      .then((app) => {
-        const PORT = SETTINGS.PORT;
-        app.listen(PORT, () => {
-          console.log(`🚀 Server listening on port ${PORT}`);
-        });
-      })
-      .catch((error) => {
-        console.error('❌ Failed to start server:', error);
-        process.exit(1);
-      });
+// Локальный запуск
+if (process.env.NODE_ENV !== 'production') {
+  initApp().catch(console.error);
 }

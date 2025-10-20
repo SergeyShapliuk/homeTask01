@@ -1,9 +1,9 @@
-import {Request, Response} from "express";
-import {HttpStatus} from "../../../core/types/http-ststuses";
-import {PostCreateInput} from "../input/post-create.input";
-import {postsService} from "../../application/posts.service";
-import {mapToPostOutputUtil} from "../mappers/map-to-post-output.util";
-import {errorsHandler} from "../../../core/errors/errors.handler";
+import { Request, Response } from 'express';
+import { HttpStatus } from '../../../core/types/http-ststuses';
+import { PostCreateInput } from '../input/post-create.input';
+import { postsService } from '../../application/posts.service';
+import { mapToPostOutputUtil } from '../mappers/map-to-post-output.util';
+import { errorsHandler } from '../../../core/errors/errors.handler';
 
 // export function createPostHandler(
 //     req: Request<{}, {}, PostInputDto>,
@@ -29,31 +29,31 @@ import {errorsHandler} from "../../../core/errors/errors.handler";
 // }
 
 export async function createPostHandler(
-    req: Request<{}, {}, PostCreateInput>,
-    res: Response
+  req: Request<{}, {}, PostCreateInput>,
+  res: Response,
 ) {
-    // const {title, shortDescription, content, blogId} = req.body;
+  // const {title, shortDescription, content, blogId} = req.body;
 
-    // --- Успех ---
-    try {
-        // const createdPostId = await postsService.create(req.body.data.attributes);
-        const createdPostId = await postsService.create(req.body);
+  // --- Успех ---
+  try {
+    // const createdPostId = await postsService.create(req.body.data.attributes);
+    const createdPostId = await postsService.create(req.body);
 
-        const createdPost = await postsService.findByIdOrFail(createdPostId);
-        // const newPost: Post = {
-        //     title: title.trim(),
-        //     shortDescription: shortDescription.trim(),
-        //     content: content.trim(),
-        //     blogId: blogId.trim(),
-        //     blogName: "",
-        //     createdAt: new Date().toISOString()
-        // };
+    const createdPost = await postsService.findByIdOrFail(createdPostId);
+    // const newPost: Post = {
+    //     title: title.trim(),
+    //     shortDescription: shortDescription.trim(),
+    //     content: content.trim(),
+    //     blogId: blogId.trim(),
+    //     blogName: "",
+    //     createdAt: new Date().toISOString()
+    // };
 
-        // const createdPost = await postsRepository.create(newPost);
-        // const postViewModel = mapToPostViewModel(createdPost);
-        const postOutput = mapToPostOutputUtil(createdPost);
-        res.status(HttpStatus.Created).send(postOutput);
-    } catch (e) {
-        errorsHandler(e, res);
-    }
+    // const createdPost = await postsRepository.create(newPost);
+    // const postViewModel = mapToPostViewModel(createdPost);
+    const postOutput = mapToPostOutputUtil(createdPost);
+    res.status(HttpStatus.Created).send(postOutput);
+  } catch (e) {
+    errorsHandler(e, res);
+  }
 }

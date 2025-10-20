@@ -1,10 +1,10 @@
-import {Request, Response} from "express";
-import {HttpStatus} from "../../../core/types/http-ststuses";
-import {BlogCreateInput} from "../input/blog-create.input";
-import {blogsService} from "../../application/blogs.service";
-import {errorsHandler} from "../../../core/errors/errors.handler";
-import {mapToPostOutputUtil} from "../../../posts/routers/mappers/map-to-post-output.util";
-import {mapToBlogOutput} from "../mappers/map-to-blog-output.util";
+import { Request, Response } from 'express';
+import { HttpStatus } from '../../../core/types/http-ststuses';
+import { BlogCreateInput } from '../input/blog-create.input';
+import { blogsService } from '../../application/blogs.service';
+import { errorsHandler } from '../../../core/errors/errors.handler';
+import { mapToPostOutputUtil } from '../../../posts/routers/mappers/map-to-post-output.util';
+import { mapToBlogOutput } from '../mappers/map-to-blog-output.util';
 
 // export function createBlogHandler(
 //   req: Request<{}, {}, BlogInputDto>,
@@ -27,24 +27,22 @@ import {mapToBlogOutput} from "../mappers/map-to-blog-output.util";
 //   return res.status(HttpStatus.Created).send(newBlog);
 // }
 export async function createBlogHandler(
-    req: Request<{}, {}, BlogCreateInput>,
-    res: Response,
+  req: Request<{}, {}, BlogCreateInput>,
+  res: Response,
 ) {
-    console.log('createBlogHandler',  req?.body,)
-    try {
-        // const createdBlogId = await blogsService.create(
-        //     req.body.data.attributes,
-        // );
-        const createdBlogId = await blogsService.create(
-            req.body
-        );
+  console.log('createBlogHandler', req?.body);
+  try {
+    // const createdBlogId = await blogsService.create(
+    //     req.body.data.attributes,
+    // );
+    const createdBlogId = await blogsService.create(req.body);
 
-        const createdBlog = await blogsService.findByIdOrFail(createdBlogId);
+    const createdBlog = await blogsService.findByIdOrFail(createdBlogId);
 
-        const blogOutput = mapToBlogOutput(createdBlog);
+    const blogOutput = mapToBlogOutput(createdBlog);
 
-        res.status(HttpStatus.Created).send(blogOutput);
-    } catch (e: unknown) {
-        errorsHandler(e, res);
-    }
+    res.status(HttpStatus.Created).send(blogOutput);
+  } catch (e: unknown) {
+    errorsHandler(e, res);
+  }
 }

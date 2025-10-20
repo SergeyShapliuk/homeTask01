@@ -1,16 +1,14 @@
-import {ResourceType} from "../../../core/types/resource-type";
-import {PostAttributes} from "../../application/dtos/post-attributes";
-
+import { ResourceType } from '../../../core/types/resource-type';
+import { PostAttributes } from '../../application/dtos/post-attributes';
 
 export type PostCreateInput = {
-    // data: {
-    //     type: ResourceType.Posts;
-    //     attributes: PostAttributes;
-    // };
+  // data: {
+  //     type: ResourceType.Posts;
+  //     attributes: PostAttributes;
+  // };
 
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string
-
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
 };

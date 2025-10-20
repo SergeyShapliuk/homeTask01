@@ -1,8 +1,6 @@
-
-
 export type BlogAttributes = {
-    name: string;
-    description: string;
-    websiteUrl: string;
-    // isMembership: boolean;
+  name: string;
+  description: string;
+  websiteUrl: string;
+  // isMembership: boolean;
 };

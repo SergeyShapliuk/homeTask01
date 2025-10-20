@@ -1,6 +1,5 @@
-import {PostDataOutput} from "./post-data.output";
-
+import { PostDataOutput } from './post-data.output';
 
 export type PostOutput = {
-    data: PostDataOutput;
+  data: PostDataOutput;
 };

@@ -1,8 +1,8 @@
-import {Request, Response} from "express";
-import {HttpStatus} from "../../../core/types/http-ststuses";
-import {blogsRepository} from "../../repositories/blogs.repository";
-import {blogsService} from "../../application/blogs.service";
-import {errorsHandler} from "../../../core/errors/errors.handler";
+import { Request, Response } from 'express';
+import { HttpStatus } from '../../../core/types/http-ststuses';
+import { blogsRepository } from '../../repositories/blogs.repository';
+import { blogsService } from '../../application/blogs.service';
+import { errorsHandler } from '../../../core/errors/errors.handler';
 
 // export function deleteBlogHandler(req: Request, res: Response) {
 //   const id = parseInt(req.params.id);
@@ -19,20 +19,23 @@ import {errorsHandler} from "../../../core/errors/errors.handler";
 //   res.status(HttpStatus.NoContent).send('No Content');
 // }
 
-export async function deleteBlogHandler(req: Request<{ id: string }>, res: Response) {
-    try {
-        const id = req.params.id;
-        await blogsService.delete(id);
+export async function deleteBlogHandler(
+  req: Request<{ id: string }>,
+  res: Response,
+) {
+  try {
+    const id = req.params.id;
+    await blogsService.delete(id);
 
-        // if (!blog) {
-        //     return res.status(HttpStatus.NotFound).send("Not Found");
-        // }
-        // // Удаление блога из массива
-        // await blogsRepository.delete(id);
+    // if (!blog) {
+    //     return res.status(HttpStatus.NotFound).send("Not Found");
+    // }
+    // // Удаление блога из массива
+    // await blogsRepository.delete(id);
 
-        // Отправка статуса 204 (No Content) без тела ответа
-        res.status(HttpStatus.NoContent).send("No Content");
-    } catch (e) {
-        errorsHandler(e, res);
-    }
+    // Отправка статуса 204 (No Content) без тела ответа
+    res.status(HttpStatus.NoContent).send('No Content');
+  } catch (e) {
+    errorsHandler(e, res);
+  }
 }
