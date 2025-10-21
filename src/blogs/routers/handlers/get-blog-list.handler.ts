@@ -6,6 +6,11 @@ import { matchedData } from 'express-validator';
 import { setDefaultSortAndPaginationIfNotExist } from '../../../core/helpers/set-default-sort-and-pagination';
 import { errorsHandler } from '../../../core/errors/errors.handler';
 import {HttpStatus} from "../../../core/types/http-ststuses";
+import {PaginationAndSorting} from "../../../core/types/pagination-and-sorting";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE, DEFAULT_SORT_BY, DEFAULT_SORT_DIRECTION
+} from "../../../core/middlewares/validation/query-pagination-sorting.validation-middleware";
 
 // export function getBlogListHandler(req: Request, res: Response) {
 //   const blogs = blogsRepository.findAll();
@@ -23,11 +28,10 @@ export async function getBlogListHandler(
     //в req.query остаются сырые квери параметры (строки)
 
     const queryInput = setDefaultSortAndPaginationIfNotExist(sanitizedQuery);
+
     const { items, totalCount } = await blogsService.findMany(queryInput);
 
-    console.log('getBlogListHandler', req.query);
-    console.log('getBlogListHandler2', queryInput);
-    console.log('getBlogListHandler3', sanitizedQuery);
+
     const blogsListOutput = mapToBlogListPaginatedOutput(items, {
       pageNumber: queryInput.pageNumber,
       pageSize: queryInput.pageSize,

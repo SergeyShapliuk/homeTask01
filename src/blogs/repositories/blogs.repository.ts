@@ -21,7 +21,7 @@ export const blogsRepository = {
         if (searchNameTerm) {
             filter.name = {$regex: searchNameTerm, $options: "i"};
         }
-        console.log("filter", filter);
+        console.log("queryDto", queryDto);
         console.log("filter2", pageNumber, pageSize, sortBy, sortDirection,);
         console.log("searchNameTerm", searchNameTerm);
         // if (searchDriverEmailTerm) {
