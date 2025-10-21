@@ -15,6 +15,13 @@ export const paginationAndSortingDefault: PaginationAndSorting<string> = {
   sortDirection: DEFAULT_SORT_DIRECTION,
 };
 
+export const searchNameTermValidator = [
+  query('searchNameTerm')
+      .optional()
+      .isString()
+      .withMessage('searchNameTerm must be a string'),
+];
+
 export function paginationAndSortingValidation<T extends string>(
   sortFieldsEnum: Record<string, T>,
 ) {

@@ -14,7 +14,10 @@ import {
     blogCreateInputValidation,
     blogUpdateInputValidation
 } from "./blog.input-dto.validation-middlewares";
-import {paginationAndSortingValidation} from "../../core/middlewares/validation/query-pagination-sorting.validation-middleware";
+import {
+    paginationAndSortingValidation,
+    searchNameTermValidator
+} from "../../core/middlewares/validation/query-pagination-sorting.validation-middleware";
 import {BlogSortField} from "./input/blog-sort-field";
 import {PostSortField} from "../../posts/routers/input/post-sort-field";
 import {getBlogPostListHandler} from "./handlers/get-blog-post-list.handler";
@@ -32,6 +35,7 @@ blogsRouter
     .get(
         "",
         paginationAndSortingValidation(BlogSortField),
+        searchNameTermValidator,
         inputValidationResultMiddleware,
         getBlogListHandler
     )
