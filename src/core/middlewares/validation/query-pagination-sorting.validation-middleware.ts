@@ -26,7 +26,7 @@ export function paginationAndSortingValidation<T extends string>(
     sortFieldsEnum: Record<string, T>
 ) {
     const allowedSortFields = Object.values(sortFieldsEnum);
-
+console.log('paginationAndSortingValidation',Object.values(sortFieldsEnum)[0])
     return [
         query("pageNumber")
             // .optional({values: "falsy"})
@@ -43,12 +43,14 @@ export function paginationAndSortingValidation<T extends string>(
             .toInt(),
 
         query("sortBy")
-            // .optional({values: "falsy"})
-            .default(Object.values(sortFieldsEnum)[0]) // Первое значение enum как дефолтное
-            .isIn(allowedSortFields)
-            .withMessage(
-                `Invalid sort field. Allowed values: ${allowedSortFields.join(", ")}`
-            ),
+            .optional()
+            .customSanitizer((value) => {
+                // Если значение невалидно или отсутствует - возвращаем дефолтное
+                if (!value || !allowedSortFields.includes(value)) {
+                    return Object.values(sortFieldsEnum)[0];
+                }
+                return value;
+            }),
 
         query("sortDirection")
             // .optional({values: "falsy"})
