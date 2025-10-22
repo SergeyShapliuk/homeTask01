@@ -43,14 +43,12 @@ console.log('paginationAndSortingValidation',Object.values(sortFieldsEnum)[0])
             .toInt(),
 
         query("sortBy")
-            .optional()
-            .customSanitizer((value) => {
-                // Если значение невалидно или отсутствует - возвращаем дефолтное
-                if (!value || !allowedSortFields.includes(value)) {
-                    return Object.values(sortFieldsEnum)[0];
-                }
-                return Object.values(sortFieldsEnum)[0];
-            }),
+            // .optional({values: "falsy"})
+            .default(Object.values(sortFieldsEnum)[0]) // Первое значение enum как дефолтное
+            .isIn(allowedSortFields)
+            .withMessage(
+                `Invalid sort field. Allowed values: ${allowedSortFields.join(", ")}`
+            ),
 
         query("sortDirection")
             // .optional({values: "falsy"})
