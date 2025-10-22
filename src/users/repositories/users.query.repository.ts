@@ -21,11 +21,11 @@ export const usersQwRepository = {
         const filter: any = {};
 
         if (searchLoginTerm) {
-            filter.email = {$regex: searchLoginTerm, $options: "i"};
+            filter.login = {$regex: searchLoginTerm, $options: "i"};
         }
 
         if (searchEmailTerm) {
-            filter["vehicle.make"] = {$regex: searchEmailTerm, $options: "i"};
+            filter.email = {$regex: searchEmailTerm, $options: "i"};
         }
 
         const items = await userCollection
