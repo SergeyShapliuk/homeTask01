@@ -18,15 +18,26 @@ export const usersQwRepository = {
         } = queryDto;
 
         const skip = (pageNumber - 1) * pageSize;
-        const filter: any = {};
+        // const filter: any = {};
+        const orConditions: any[] = [];
 
-        if (searchLoginTerm) {
-            filter.login = {$regex: searchLoginTerm, $options: "i"};
+        // if (searchLoginTerm) {
+        //     filter.login = {$regex: searchLoginTerm, $options: "i"};
+        // }
+        //
+        // if (searchEmailTerm) {
+        //     filter.email = {$regex: searchEmailTerm, $options: "i"};
+        //}
+        if (searchLoginTerm && searchLoginTerm.trim() !== "") {
+            orConditions.push({login: {$regex: searchLoginTerm, $options: "i"}});
         }
 
-        if (searchEmailTerm) {
-            filter.email = {$regex: searchEmailTerm, $options: "i"};
+        if (searchEmailTerm && searchEmailTerm.trim() !== "") {
+            orConditions.push({email: {$regex: searchEmailTerm, $options: "i"}});
         }
+
+        const filter = orConditions.length > 0 ? {$or: orConditions} : {};
+
 
         const items = await userCollection
             .find(filter)
@@ -38,7 +49,7 @@ export const usersQwRepository = {
         const totalCount = await userCollection.countDocuments(filter);
 
         return {items, totalCount};
-    },
+    }
 
     // async findById(id: string): Promise<IUserView | null> {
     //     const user = await db
