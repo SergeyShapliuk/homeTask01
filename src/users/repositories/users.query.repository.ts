@@ -38,13 +38,13 @@ export const usersQwRepository = {
 
         const filter = orConditions.length > 0 ? {$or: orConditions} : {};
 
-        const sortDirectionNumber = sortDirection === "asc" ? 1 : -1;
+        // const sortDirectionNumber = sortDirection === "asc" ? 1 : -1;
 
 
         const items = await userCollection
             .find(filter)
             .collation({ locale: "en", strength: 2 })
-            .sort({[sortBy]: sortDirectionNumber})
+            .sort({[sortBy]: sortDirection})
             .skip(skip)
             .limit(pageSize)
             .toArray();
