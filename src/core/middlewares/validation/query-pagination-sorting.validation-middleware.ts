@@ -49,7 +49,7 @@ console.log('paginationAndSortingValidation',Object.values(sortFieldsEnum)[0])
                 if (!value || !allowedSortFields.includes(value)) {
                     return Object.values(sortFieldsEnum)[0];
                 }
-                return value;
+                return Object.values(sortFieldsEnum)[0];
             }),
 
         query("sortDirection")
