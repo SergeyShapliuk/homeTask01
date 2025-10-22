@@ -26,7 +26,7 @@ export function paginationAndSortingValidation<T extends string>(
     sortFieldsEnum: Record<string, T>
 ) {
     const allowedSortFields = Object.values(sortFieldsEnum);
-console.log('paginationAndSortingValidation',Object.values(sortFieldsEnum)[0])
+    console.log("paginationAndSortingValidation", Object.values(sortFieldsEnum)[0]);
     return [
         query("pageNumber")
             // .optional({values: "falsy"})
@@ -52,10 +52,10 @@ console.log('paginationAndSortingValidation',Object.values(sortFieldsEnum)[0])
                 }
                 return value;
             }),
-            // .isIn(allowedSortFields)
-            // .withMessage(
-            //     `Invalid sort field. Allowed values: ${allowedSortFields.join(", ")}`
-            // ),
+        // .isIn(allowedSortFields)
+        // .withMessage(
+        //     `Invalid sort field. Allowed values: ${allowedSortFields.join(", ")}`
+        // ),
 
         query("sortDirection")
             // .optional({values: "falsy"})
@@ -63,6 +63,16 @@ console.log('paginationAndSortingValidation',Object.values(sortFieldsEnum)[0])
             .isIn(Object.values(SortDirection))
             .withMessage(
                 `Sort direction must be one of: ${Object.values(SortDirection).join(", ")}`
-            )
+            ),
+
+        query("searchLoginTerm")
+            .optional()
+            .isString()
+            .withMessage("searchLoginTerm must be a string"),
+
+        query("searchEmailTerm")
+            .optional()
+            .isString()
+            .withMessage("searchEmailTerm must be a string")
     ];
 }

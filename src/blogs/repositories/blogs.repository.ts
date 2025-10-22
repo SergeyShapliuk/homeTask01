@@ -73,7 +73,7 @@ export const blogsRepository = {
     //     const blog = db.blogs.find((v) => +v.id === id);
     //
     //     if (!blog) {
-    //         throw new Error("Post not exist");
+    //         throw new Error("User not exist");
     //     }
     //     // --- Обновление ---
     //     Object.assign(blog, newBlog);
@@ -100,7 +100,7 @@ export const blogsRepository = {
     //     const index = db.blogs.findIndex((v) => +v.id === id);
     //
     //     if (index === -1) {
-    //         throw new Error("Post not exist");
+    //         throw new Error("User not exist");
     //     }
     //
     //     db.blogs.splice(index, 1);

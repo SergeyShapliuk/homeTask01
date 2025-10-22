@@ -16,7 +16,7 @@ import {
 
 export const postsRouter = Router({});
 
-// postsRouter.use(superAdminGuardMiddleware);
+// usersRouter.use(superAdminGuardMiddleware);
 
 postsRouter
     .get(

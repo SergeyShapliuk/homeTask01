@@ -19,18 +19,15 @@ import {
     searchNameTermValidator
 } from "../../core/middlewares/validation/query-pagination-sorting.validation-middleware";
 import {BlogSortField} from "./input/blog-sort-field";
-import {PostSortField} from "../../posts/routers/input/post-sort-field";
 import {getBlogPostListHandler} from "./handlers/get-blog-post-list.handler";
 import {createBlogPostByIdHandler} from "./handlers/create-blog-post-by-id.handler";
 import {
-    postCreateInputValidation,
     postCreatePostByBlogIdInputValidation
 } from "../../posts/routers/post.input-dto.validation-middlewares";
 
 export const blogsRouter = Router({});
 
-// blogsRouter.use(superAdminGuardMiddleware);
-//
+
 blogsRouter
     .get(
         "",
