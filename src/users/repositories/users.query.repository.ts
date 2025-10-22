@@ -43,7 +43,7 @@ export const usersQwRepository = {
         const items = await userCollection
             .find(filter)
             .collation({locale: "en", strength: 2})
-            .sort({[sortBy]: sortDirectionNumber, createdAt: 1})
+            .sort({[sortBy]: sortDirectionNumber, createdAt: sortDirectionNumber})
             .skip(skip)
             .limit(pageSize)
             .toArray();
