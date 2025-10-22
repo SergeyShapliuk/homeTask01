@@ -45,10 +45,17 @@ console.log('paginationAndSortingValidation',Object.values(sortFieldsEnum)[0])
         query("sortBy")
             // .optional({values: "falsy"})
             .default(Object.values(sortFieldsEnum)[0]) // Первое значение enum как дефолтное
-            .isIn(allowedSortFields)
-            .withMessage(
-                `Invalid sort field. Allowed values: ${allowedSortFields.join(", ")}`
-            ),
+            .customSanitizer((value) => {
+                // Если значение невалидно или отсутствует - возвращаем дефолтное
+                if (!value || !allowedSortFields.includes(value)) {
+                    return Object.values(sortFieldsEnum)[0];
+                }
+                return value;
+            }),
+            // .isIn(allowedSortFields)
+            // .withMessage(
+            //     `Invalid sort field. Allowed values: ${allowedSortFields.join(", ")}`
+            // ),
 
         query("sortDirection")
             // .optional({values: "falsy"})

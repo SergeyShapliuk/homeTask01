@@ -79,7 +79,7 @@ blogsRouter
     .get(
         "/:blogId/posts",
         blogIdValidation,
-        paginationAndSortingValidation(PostSortField),
+        paginationAndSortingValidation(BlogSortField),
         inputValidationResultMiddleware,
         getBlogPostListHandler
     );
