@@ -1,4 +1,5 @@
 export enum UserSortField {
     CreatedAt = "createdAt",
-    // BlogName = "blogName",
+    Login = "login",
+    Email = "email",
 }
