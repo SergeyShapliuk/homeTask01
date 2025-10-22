@@ -3,16 +3,19 @@ import {User} from "../domain/user";
 import {usersRepository} from "../repositories/users.repository";
 import {UserQueryInput} from "../routers/input/user-query.input";
 import {UserAttributes} from "./dtos/user-attributes";
+import {usersQwRepository} from "../repositories/users.query.repository";
+import {bcryptService} from "../../core/adapters/bcrypt.service";
 
 // export enum PostErrorCode {
 //     AlreadyFinished = 'RIDE_ALREADY_FINISHED',
 // }
 
 export const userService = {
+
     async findMany(
         queryDto: UserQueryInput
     ): Promise<{ items: WithId<User>[]; totalCount: number }> {
-        return usersRepository.findMany(queryDto);
+        return usersQwRepository.findMany(queryDto);
     },
 
     async findByIdOrFail(id: string): Promise<WithId<User>> {
@@ -20,17 +23,14 @@ export const userService = {
     },
 
     async create(dto: UserAttributes): Promise<string> {
-        // const post = await blogsRepository.findByIdOrFail(dto.id);
-        //
-        // if (!post) {
-        //   throw new RepositoryNotFoundError(
-        //     `User not found`,
-        //   );
-        // }
+        const { login, password, email } = dto;
+        const passwordHash = await bcryptService.generateHash(password);
+
 
         const newUser: User = {
-            login: dto.login,
-            email: dto.email,
+            login,
+            email,
+            passwordHash,
             createdAt: new Date().toISOString()
         };
 

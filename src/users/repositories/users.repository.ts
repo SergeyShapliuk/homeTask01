@@ -6,40 +6,6 @@ import {userCollection} from "../../db/db";
 
 export const usersRepository = {
 
-    async findMany(
-        queryDto: UserQueryInput
-    ): Promise<{ items: WithId<User>[]; totalCount: number }> {
-        const {
-            pageNumber,
-            pageSize,
-            sortBy,
-            sortDirection,
-            searchLoginTerm,
-            searchEmailTerm
-        } = queryDto;
-
-        const skip = (pageNumber - 1) * pageSize;
-        const filter: any = {};
-
-        if (searchLoginTerm) {
-            filter.email = {$regex: searchLoginTerm, $options: "i"};
-        }
-
-        if (searchEmailTerm) {
-            filter["vehicle.make"] = {$regex: searchEmailTerm, $options: "i"};
-        }
-
-        const items = await userCollection
-            .find(filter)
-            .sort({[sortBy]: sortDirection})
-            .skip(skip)
-            .limit(pageSize)
-            .toArray();
-
-        const totalCount = await userCollection.countDocuments(filter);
-
-        return {items, totalCount};
-    },
 
     async findById(id: string): Promise<WithId<User> | null> {
         return userCollection.findOne({_id: new ObjectId(id)});
@@ -68,5 +34,14 @@ export const usersRepository = {
             throw new RepositoryNotFoundError("User not exist");
         }
         return;
+    },
+
+    async findByLoginOrEmail(
+        loginOrEmail: string
+    ): Promise<WithId<User> | null> {
+        return userCollection.findOne({
+            $or: [{email: loginOrEmail}, {login: loginOrEmail}]
+        });
     }
+
 };
