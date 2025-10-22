@@ -22,17 +22,10 @@ export const postsRepository = {
       pageSize,
       sortBy,
       sortDirection,
-      searchNameTerm,
-      // searchDriverEmailTerm,
-      // searchVehicleMakeTerm,
     } = queryDto;
 
     const skip = (pageNumber - 1) * pageSize;
     const filter: any = {};
-
-    if (searchNameTerm) {
-      filter.name = { $regex: searchNameTerm, $options: 'i' };
-    }
 
     // if (searchDriverEmailTerm) {
     //     filter.email = { $regex: searchDriverEmailTerm, $options: 'i' };
