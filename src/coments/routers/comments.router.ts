@@ -4,14 +4,9 @@ import {updateCommentHandler} from "./handlers/update-comment.handler";
 import {deleteCommentHandler} from "./handlers/delete-comment.handler";
 import {idValidation} from "../../core/middlewares/validation/params-id.validation-middleware";
 import {inputValidationResultMiddleware} from "../../core/middlewares/validation/input-validtion-result.middleware";
-import {superAdminGuardMiddleware} from "../../auth/middlewares/super-admin.guard-middleware";
-import {CommentSortField} from "./input/comment-sort-field";
-import {paginationAndSortingValidation} from "../../core/middlewares/validation/query-pagination-sorting.validation-middleware";
-import {
-    userCreateInputValidation
-} from "./comment.input-dto.validation-middlewares";
 import {getCommentHandler} from "./handlers/get-comment.handler";
 import {accessTokenGuard} from "../../auth/routers/guard/access.token.guard";
+import {postCreateContentByPostIdInputValidation} from "../../posts/routers/post.input-dto.validation-middlewares";
 
 export const commentsRouter = Router({});
 
@@ -29,6 +24,7 @@ commentsRouter
         "/:id",
         accessTokenGuard,
         idValidation,
+        ...postCreateContentByPostIdInputValidation,
         inputValidationResultMiddleware,
         updateCommentHandler
     )
