@@ -14,8 +14,8 @@ export async function loginUserHandler(
         const accessToken = await authService.loginUser({loginOrEmail, password});
 
         if (!accessToken) return res.sendStatus(HttpStatus.Unauthorized);
-
-        res.status(HttpStatus.NoContent).send({accessToken});
+        console.log(accessToken)
+        res.status(HttpStatus.Ok).send(accessToken);
     } catch (e) {
         errorsHandler(e, res);
     }

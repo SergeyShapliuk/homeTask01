@@ -1,6 +1,7 @@
 import {AuthAttributes} from "./dtos/auth-attributes";
 import {bcryptService} from "../../core/adapters/bcrypt.service";
 import {usersRepository} from "../../users/repositories/users.repository";
+import {jwtService} from "../../core/adapters/jwt.service";
 
 
 export const authService = {
@@ -8,26 +9,33 @@ export const authService = {
     async loginUser(
         queryDto: AuthAttributes
     ): Promise<{ accessToken: string } | null> {
-        const isCorrectCredentials = await this.checkUserCredentials(
+        const isCorrectCredentialsId = await this.checkUserCredentials(
             queryDto.loginOrEmail,
             queryDto.password
         );
-        if (!isCorrectCredentials) {
+
+        if (!isCorrectCredentialsId) {
             return null;
         }
+        const accessToken = await jwtService.createToken(isCorrectCredentialsId);
 
-        return {accessToken: "token"};
+        return {accessToken};
     },
 
     async checkUserCredentials(
         loginOrEmail: string,
         password: string
-    ): Promise<boolean> {
+    ): Promise<string | null> {
         const user = await usersRepository.findByLoginOrEmail(loginOrEmail);
         console.log("checkUserCredentials", user);
-        if (!user) return false;
+        if (!user) return null;
+        const isPassCorrect = await bcryptService.checkPassword(password, user.passwordHash ?? "");
+        if (!isPassCorrect) {
+            return null;
+        }
 
-        return bcryptService.checkPassword(password, user.passwordHash ?? "");
+
+        return user._id.toString() ?? null;
     }
 
 };

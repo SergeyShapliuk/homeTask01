@@ -1,7 +1,6 @@
 import {ObjectId, WithId} from "mongodb";
 import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
 import {User} from "../domain/user";
-import {UserQueryInput} from "../routers/input/user-query.input";
 import {userCollection} from "../../db/db";
 
 export const usersRepository = {
