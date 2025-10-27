@@ -6,11 +6,11 @@ import {CommentUpdateInput} from "../input/comment-update.input";
 
 
 export async function updateCommentHandler(
-    req: Request<{ commentId: string }, {}, CommentUpdateInput>,
+    req: Request<{ id: string }, {}, CommentUpdateInput>,
     res: Response
 ) {
     try {
-        const id = req.params.commentId;
+        const id = req.params.id;
         console.log("updateCommentHandler", id);
         await commentService.update(id, req.body);
 

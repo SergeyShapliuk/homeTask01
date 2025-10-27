@@ -20,14 +20,13 @@ export const commentsRouter = Router({});
 commentsRouter
     .get(
         "/:id",
-        accessTokenGuard,
         idValidation,
         inputValidationResultMiddleware,
         getCommentHandler
     )
 
     .put(
-        "/:commentId",
+        "/:id",
         accessTokenGuard,
         idValidation,
         inputValidationResultMiddleware,
@@ -35,7 +34,7 @@ commentsRouter
     )
 
     .delete(
-        "/:commentId",
+        "/:id",
         accessTokenGuard,
         idValidation,
         inputValidationResultMiddleware,
