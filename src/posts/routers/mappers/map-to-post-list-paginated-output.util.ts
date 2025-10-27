@@ -6,7 +6,7 @@ import { PostListPaginatedOutput } from '../output/post-list-paginated.output';
 export function mapToPostListPaginatedOutput(
   posts: WithId<Post>[],
   meta: { pageNumber: number; pageSize: number; totalCount: number },
-  // ): UserListPaginatedOutput {
+  // ): CommentListPaginatedOutput {
 ): any {
   // return {
   //     meta: {

@@ -1,4 +1,4 @@
-import { postCollection } from '../../db/db';
+import {commentCollection, postCollection} from "../../db/db";
 import { ObjectId, WithId } from 'mongodb';
 import { PostQueryInput } from '../routers/input/post-query.input';
 import { PostAttributes } from '../application/dtos/post-attributes';
@@ -6,12 +6,15 @@ import { RepositoryNotFoundError } from '../../core/errors/repository-not-found.
 import { Post } from '../domain/post';
 import {PaginationAndSorting} from "../../core/types/pagination-and-sorting";
 import {BlogSortField} from "../../blogs/routers/input/blog-sort-field";
+import {CommentSortField} from "../../coments/routers/input/comment-sort-field";
+import {Comment} from "../../coments/domain/comment";
+import {commentRepository} from "../../coments/repositories/comment.repository";
 
 export const postsRepository = {
-  // findAll(): Post[] {
+  // findAll(): User[] {
   //   return db.posts;
   // },
-  // async findAll(): Promise<WithId<Post>[]> {
+  // async findAll(): Promise<WithId<User>[]> {
   //     return postCollection.find().toArray();
   // },
   async findMany(
@@ -47,7 +50,7 @@ export const postsRepository = {
     return { items, totalCount };
   },
 
-  // findById(id: number): Post | null {
+  // findById(id: number): User | null {
   //   return db.posts.find((v) => +v.id === id) ?? null;
   // },
   async findPostsByBlog(
@@ -74,6 +77,31 @@ export const postsRepository = {
     return { items, totalCount };
   },
 
+  async findCommentsByPost(
+      paginationDto: PaginationAndSorting<CommentSortField>,
+      postId: string
+  ): Promise<{ items: WithId<Comment>[]; totalCount: number }> {
+
+    const { pageNumber, pageSize, sortBy, sortDirection } = paginationDto;
+    const skip = (pageNumber - 1) * pageSize;
+
+    const filter = { postId: postId };
+
+
+
+    const [items, totalCount] = await Promise.all([
+      commentCollection
+          .find(filter)
+          .sort({ [sortBy]: sortDirection })
+          .skip(skip)
+          .limit(pageSize)
+          .toArray(),
+      commentCollection.countDocuments(filter),
+    ]);
+    return { items, totalCount };
+  },
+
+
   async findById(id: string): Promise<WithId<Post> | null> {
     return postCollection.findOne({ _id: new ObjectId(id) });
   },
@@ -82,7 +110,7 @@ export const postsRepository = {
     const res = await postCollection.findOne({ _id: new ObjectId(id) });
 
     if (!res) {
-      throw new RepositoryNotFoundError('Post not exist');
+      throw new RepositoryNotFoundError('User not exist');
     }
     return res;
   },
@@ -91,11 +119,11 @@ export const postsRepository = {
     const res = await postCollection.findOne({ _blogId: new ObjectId(blogId) });
 
     if (!res) {
-      throw new RepositoryNotFoundError('Post not exist');
+      throw new RepositoryNotFoundError('User not exist');
     }
     return res;
   },
-  // create(newPost: Post): Post {
+  // create(newPost: User): User {
   //   db.posts.push(newPost);
   //
   //   return newPost;
@@ -105,7 +133,7 @@ export const postsRepository = {
     return insertResult.insertedId.toString();
   },
 
-  // async createPostByBlog(id: string, postData: Omit<Post, "blogId" | "_id">): Promise<string> {
+  // async createPostByBlog(id: string, postData: Omit<User, "blogId" | "_id">): Promise<string> {
   //     const updateResult = await postCollection.insertOne(
   //         {
   //             _id: new ObjectId(id)
@@ -127,7 +155,7 @@ export const postsRepository = {
   //   const post = db.posts.find((v) => +v.id === id);
   //
   //   if (!post) {
-  //     throw new Error('Post not exist');
+  //     throw new Error('User not exist');
   //   }
   //   // --- Обновление ---
   //   Object.assign(post, newPost);
@@ -145,7 +173,7 @@ export const postsRepository = {
     );
 
     if (updateResult.matchedCount < 1) {
-      throw new RepositoryNotFoundError('Post not exist');
+      throw new RepositoryNotFoundError('User not exist');
     }
     return;
   },
@@ -154,7 +182,7 @@ export const postsRepository = {
   //   const index = db.posts.findIndex((v) => +v.id === id);
   //
   //   if (index === -1) {
-  //     throw new Error('Post not exist');
+  //     throw new Error('User not exist');
   //   }
   //
   //   db.posts.splice(index, 1);
@@ -166,7 +194,7 @@ export const postsRepository = {
     });
 
     if (deleteResult.deletedCount < 1) {
-      throw new RepositoryNotFoundError('Post not exist');
+      throw new RepositoryNotFoundError('User not exist');
     }
     return;
   },

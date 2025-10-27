@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export const jwtService = {
     async createToken(userId: string): Promise<string> {
         return jwt.sign({userId},'createToken-for-me', {
-            expiresIn: 300
+            expiresIn: 3000
         });
     },
     async decodeToken(token: string): Promise<any> {

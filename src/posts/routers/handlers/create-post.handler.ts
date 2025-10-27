@@ -5,14 +5,14 @@ import { postsService } from '../../application/posts.service';
 import { mapToPostOutputUtil } from '../mappers/map-to-post-output.util';
 import { errorsHandler } from '../../../core/errors/errors.handler';
 
-// export function createPostHandler(
+// export function updateCommentHandler(
 //     req: Request<{}, {}, PostInputDto>,
 //     res: Response
 // ) {
 //     const {title, shortDescription, content, blogId} = req.body;
 //
 //     // --- Успех ---
-//     const newPost: Post = {
+//     const newPost: User = {
 //         id: (db.posts.length
 //                 ? +db.posts[db.posts.length - 1].id + 1
 //                 : 1
@@ -36,11 +36,11 @@ export async function createPostHandler(
 
   // --- Успех ---
   try {
-    // const createdPostId = await postsService.create(req.body.data.attributes);
+    // const createdPostId = await commentService.create(req.body.data.attributes);
     const createdPostId = await postsService.create(req.body);
 
     const createdPost = await postsService.findByIdOrFail(createdPostId);
-    // const newPost: Post = {
+    // const newPost: User = {
     //     title: title.trim(),
     //     shortDescription: shortDescription.trim(),
     //     content: content.trim(),

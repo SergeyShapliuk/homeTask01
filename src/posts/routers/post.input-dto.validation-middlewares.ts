@@ -50,6 +50,10 @@ export const postCreatePostByBlogIdInputValidation = [
   titleValidation,
   shortDescriptionValidation,
   contentValidation,
+]
+
+export const postCreateContentByPostIdInputValidation = [
+  contentValidation,
 ];
 
 export const postUpdateInputValidation = [

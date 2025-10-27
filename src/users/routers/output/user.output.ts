@@ -1,7 +1,7 @@
 import {UserDataOutput} from "./user-data.output";
 
 export type UserOutput = {
-    // data: UserDataOutput;
+    // data: CommentDataOutput;
     id: string;
     login: string;
     email: string;

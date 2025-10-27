@@ -3,7 +3,7 @@ import { HttpStatus } from '../../../core/types/http-ststuses';
 import { postsService } from '../../application/posts.service';
 import { errorsHandler } from '../../../core/errors/errors.handler';
 
-// export function deletePostHandler(req: Request, res: Response) {
+// export function deleteCommentHandler(req: Request, res: Response) {
 //   const id = parseInt(req.params.id);
 //   const blog = postsRepository.findById(id);
 //

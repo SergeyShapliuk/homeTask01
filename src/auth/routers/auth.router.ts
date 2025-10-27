@@ -1,7 +1,6 @@
 import {Router} from "express";
 import {loginUserHandler} from "./handlers/create-user.handler";
 import {inputValidationResultMiddleware} from "../../core/middlewares/validation/input-validtion-result.middleware";
-import {superAdminGuardMiddleware} from "../../auth/middlewares/super-admin.guard-middleware";
 import {authInputValidation} from "./auth.input-dto.validation-middlewares";
 import {getUserHandler} from "./handlers/get-user.handler";
 import {accessTokenGuard} from "./guard/access.token.guard";

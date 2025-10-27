@@ -4,19 +4,31 @@ import {getPostHandler} from "./handlers/get-post.handler";
 import {createPostHandler} from "./handlers/create-post.handler";
 import {updatePostHandler} from "./handlers/update-post.handler";
 import {deletePostHandler} from "./handlers/delete-post.handler";
-import {idValidation} from "../../core/middlewares/validation/params-id.validation-middleware";
+import {
+    blogIdValidation,
+    idValidation,
+    postIdValidation
+} from "../../core/middlewares/validation/params-id.validation-middleware";
 import {inputValidationResultMiddleware} from "../../core/middlewares/validation/input-validtion-result.middleware";
 import {superAdminGuardMiddleware} from "../../auth/middlewares/super-admin.guard-middleware";
 import {PostSortField} from "./input/post-sort-field";
 import {paginationAndSortingValidation} from "../../core/middlewares/validation/query-pagination-sorting.validation-middleware";
 import {
-    postCreateInputValidation,
+    postCreateContentByPostIdInputValidation,
+    postCreateInputValidation, postCreatePostByBlogIdInputValidation,
     postUpdateInputValidation
 } from "./post.input-dto.validation-middlewares";
+import {createBlogPostByIdHandler} from "../../blogs/routers/handlers/create-blog-post-by-id.handler";
+import {BlogSortField} from "../../blogs/routers/input/blog-sort-field";
+import {getBlogPostListHandler} from "../../blogs/routers/handlers/get-blog-post-list.handler";
+import {CommentSortField} from "../../coments/routers/input/comment-sort-field";
+import {getCommentPostListHandler} from "./handlers/get-comment-post-list.handler";
+import {createCommentPostByIdHandler} from "./handlers/create-comment-post-by-id.handler";
+import {accessTokenGuard} from "../../auth/routers/guard/access.token.guard";
 
 export const postsRouter = Router({});
 
-// usersRouter.use(superAdminGuardMiddleware);
+// commentsRouter.use(superAdminGuardMiddleware);
 
 postsRouter
     .get(
@@ -51,4 +63,24 @@ postsRouter
         idValidation,
         inputValidationResultMiddleware,
         deletePostHandler
+    )
+
+    .get(
+        "/:postId/comments",
+        postIdValidation,
+        paginationAndSortingValidation(CommentSortField),
+        inputValidationResultMiddleware,
+        getCommentPostListHandler
+    )
+
+    .post(
+        "/:postId/comments",
+        accessTokenGuard,
+        postIdValidation,
+        postCreateContentByPostIdInputValidation,
+        inputValidationResultMiddleware,
+        createCommentPostByIdHandler
     );
+
+
+

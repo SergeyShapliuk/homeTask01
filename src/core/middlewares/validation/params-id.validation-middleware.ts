@@ -16,6 +16,14 @@ export const blogIdValidation = param('blogId')
   .isMongoId()
   .withMessage('Неверный формат ObjectId');
 
+export const postIdValidation = param('postId')
+  .exists()
+  .withMessage('ID is required') // Проверка на наличие
+  .isString()
+  .withMessage('ID must be a string') // Проверка, что это строка
+  .isMongoId()
+  .withMessage('Неверный формат ObjectId');
+
 export const dataIdMatchValidation = body('data.id')
   .exists()
   .withMessage('ID in body is required')

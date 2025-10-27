@@ -7,7 +7,7 @@ import {mapToPostListPaginatedOutput} from "../mappers/map-to-post-list-paginate
 import {errorsHandler} from "../../../core/errors/errors.handler";
 import {HttpStatus} from "../../../core/types/http-ststuses";
 
-// export function getPostListHandler(req: Request, res: Response) {
+// export function getComentHandler(req: Request, res: Response) {
 //   const blogs = postsRepository.findAll();
 //   res.status(HttpStatus.Ok).send(blogs);
 // }

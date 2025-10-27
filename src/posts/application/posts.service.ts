@@ -10,6 +10,9 @@ import { PostSortField } from '../routers/input/post-sort-field';
 import { blogsRepository } from '../../blogs/repositories/blogs.repository';
 import { RepositoryNotFoundError } from '../../core/errors/repository-not-found.error';
 import {BlogSortField} from "../../blogs/routers/input/blog-sort-field";
+import {CommentSortField} from "../../coments/routers/input/comment-sort-field";
+import {Comment} from "../../coments/domain/comment";
+import {commentRepository} from "../../coments/repositories/comment.repository";
 
 // export enum PostErrorCode {
 //     AlreadyFinished = 'RIDE_ALREADY_FINISHED',
@@ -30,6 +33,16 @@ export const postsService = {
 
     return postsRepository.findPostsByBlog(paginationDto, blogId);
   },
+
+  async findCommentsByPost(
+      paginationDto: PaginationAndSorting<CommentSortField>,
+      postId: string
+  ): Promise<{ items: WithId<Comment>[]; totalCount: number }> {
+    const post = await postsRepository.findByIdOrFail(postId);
+
+    return postsRepository.findCommentsByPost(paginationDto, post._id.toString());
+  },
+
 
   async createForBlog(dto: {
     title: string;
