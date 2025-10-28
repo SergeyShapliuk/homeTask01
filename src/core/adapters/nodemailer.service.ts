@@ -6,7 +6,7 @@ export const nodemailerService = {
         code: string,
         template: (code: string) => string
     ): Promise<boolean> {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === "production") {
             console.log(`[PROD] Email simulation for tests: ${email} with code: ${code}`);
             return true;
         }
@@ -18,7 +18,7 @@ export const nodemailerService = {
                 pass: process.env.PASS ?? "zbws jgqp nfdt jzzr"
             },
             tls: {
-                rejectUnauthorized: false
+                rejectUnauthorized: process.env.NODE_ENV === "production"
             }
         });
 
