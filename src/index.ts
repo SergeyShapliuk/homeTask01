@@ -22,9 +22,17 @@ export const initApp = async () => {
         const PORT = process.env.PORT || SETTINGS.PORT;
 
         // ✅ Обязательно указываем '0.0.0.0' для Render
-        app.listen(Number(PORT), "0.0.0.0", () => {
-            console.log(`🚀 Server listening on port ${PORT}`);
-        });
+        if (process.env.NODE_ENV === "production") {
+            // Для Render: слушаем на 0.0.0.0
+            app.listen(Number(PORT), "0.0.0.0", () => {
+                console.log(`🚀 Production server listening on port ${PORT}`);
+            });
+        } else {
+            // Для локальной разработки: без указания host
+            app.listen(Number(PORT), () => {
+                console.log(`🚀 Development server listening on port ${PORT}`);
+            });
+        }
     }
 
     return appInstance;

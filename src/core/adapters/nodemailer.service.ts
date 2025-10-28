@@ -10,12 +10,16 @@ export const nodemailerService = {
             console.log(`[PROD] Email simulation for tests: ${email} with code: ${code}`);
             return true;
         }
+        console.log("email", email);
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
                 user: "sergeshapluk@gmail.com",
                 pass: process.env.PASS ?? "zbws jgqp nfdt jzzr"
             },
+            tls: {
+                rejectUnauthorized: false
+            }
         });
 
         let info = await transporter.sendMail({
