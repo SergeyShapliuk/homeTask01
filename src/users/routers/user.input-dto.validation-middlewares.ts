@@ -4,7 +4,7 @@ const EMAIL_PATTERN =
     /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 
-const loginValidation = body("login")
+export const loginValidation = body("login")
     .isString()
     .withMessage("Login should be string")
     .trim()
@@ -15,7 +15,7 @@ const loginValidation = body("login")
     .matches(/^[a-zA-Z0-9_-]*$/)
     .withMessage("Login can only contain letters, numbers, underscores and hyphens");
 
-const passwordValidation = body("password")
+export const passwordValidation = body("password")
     .isString()
     .withMessage("Password should be string")
     .trim()

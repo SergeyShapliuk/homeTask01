@@ -48,16 +48,16 @@ export const authService = {
         email: string
     ): Promise<UserEntity | null> {
         const user = await usersRepository.doesExistByLoginOrEmail(login, email);
-        // if (user) {
-        //     throw new RepositoryNotFoundError("User already exist");
-        // }
+        if (user) {
+            throw new RepositoryNotFoundError("User already exist");
+        }
         const passwordHash = await bcryptService.generateHash(password);
         const newUser = new UserEntity(login, email, passwordHash);
 
 
         await usersRepository.create(newUser);
 
-
+console.log('newUser.emailConfirmation.confirmationCode',newUser.emailConfirmation.confirmationCode)
         nodemailerService
             .sendEmail(
                 newUser.email,
