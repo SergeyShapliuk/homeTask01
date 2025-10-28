@@ -2,6 +2,7 @@ import {ObjectId, WithId} from "mongodb";
 import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
 import {User} from "../domain/user";
 import {userCollection} from "../../db/db";
+import {UserEntity} from "../domain/user.entity";
 
 export const usersRepository = {
 
@@ -19,8 +20,8 @@ export const usersRepository = {
         return res;
     },
 
-    async create(newPost: User): Promise<string> {
-        const insertResult = await userCollection.insertOne(newPost);
+    async create(newUser: UserEntity): Promise<string> {
+        const insertResult = await userCollection.insertOne(newUser);
         return insertResult.insertedId.toString();
     },
 
@@ -41,6 +42,16 @@ export const usersRepository = {
         return userCollection.findOne({
             $or: [{email: loginOrEmail}, {login: loginOrEmail}]
         });
-    }
+    },
+
+    async doesExistByLoginOrEmail(
+        login: string,
+        email: string
+    ): Promise<boolean> {
+        const user = await userCollection.findOne({
+            $or: [{ email }, { login }],
+        });
+        return !!user;
+    },
 
 };

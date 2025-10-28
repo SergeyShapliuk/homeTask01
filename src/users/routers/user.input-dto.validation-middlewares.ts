@@ -24,7 +24,7 @@ const passwordValidation = body("password")
     .isLength({min: 6, max: 20})
     .withMessage("Password must be between 6 and 20 characters");
 
-const emailValidation = body("email")
+export const emailValidation = body("email")
     .isString()
     .withMessage("Email should be string")
     .trim()
@@ -34,6 +34,17 @@ const emailValidation = body("email")
     .withMessage("Invalid email format")
     .isLength({max: 100})
     .withMessage("Email is too long");
+
+export const codeValidation = body("code")
+    .isString()
+    .withMessage("Code should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("Code is required")
+    // .matches(EMAIL_PATTERN)
+    // .withMessage("Invalid email format")
+    // .isLength({max: 100})
+    // .withMessage("Email is too long");
 
 export const userCreateInputValidation = [
     // resourceTypeValidation(ResourceType.Posts),

@@ -4,6 +4,14 @@ import {inputValidationResultMiddleware} from "../../core/middlewares/validation
 import {authInputValidation} from "./auth.input-dto.validation-middlewares";
 import {getUserHandler} from "./handlers/get-user.handler";
 import {accessTokenGuard} from "./guard/access.token.guard";
+import {
+    codeValidation,
+    emailValidation,
+    userCreateInputValidation
+} from "../../users/routers/user.input-dto.validation-middlewares";
+import {registrationUserHandler} from "./handlers/create-registration-user.handler";
+import {confirmCodeHandler} from "./handlers/confirm-registration-user.handler";
+import {resendCodeHandler} from "./handlers/resend-code-registration-user.handler";
 
 export const authRouter = Router({});
 
@@ -23,4 +31,26 @@ authRouter
         accessTokenGuard,
         inputValidationResultMiddleware,
         getUserHandler
+    )
+
+    .post(
+        "/registration",
+        userCreateInputValidation,
+        inputValidationResultMiddleware,
+        registrationUserHandler
+    )
+
+    .post(
+        "/registration-confirmation",
+        codeValidation,
+        inputValidationResultMiddleware,
+        confirmCodeHandler
+    )
+
+    .post(
+        "/registration-email-resending",
+        emailValidation,
+        inputValidationResultMiddleware,
+        resendCodeHandler
     );
+

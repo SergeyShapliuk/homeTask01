@@ -2,6 +2,10 @@ import {AuthAttributes} from "./dtos/auth-attributes";
 import {bcryptService} from "../../core/adapters/bcrypt.service";
 import {usersRepository} from "../../users/repositories/users.repository";
 import {jwtService} from "../../core/adapters/jwt.service";
+import {nodemailerService} from "../../core/adapters/nodemailer.service";
+import {emailExamples} from "../../core/adapters/emailExamples";
+import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
+import { UserEntity} from "../../users/domain/user.entity";
 
 
 export const authService = {
@@ -36,6 +40,33 @@ export const authService = {
 
 
         return user._id.toString() ?? null;
+    },
+
+    async registerUser(
+        login: string,
+        password: string,
+        email: string
+    ): Promise<UserEntity | null> {
+        const user = await usersRepository.doesExistByLoginOrEmail(login, email);
+        // if (user) {
+        //     throw new RepositoryNotFoundError("User already exist");
+        // }
+        const passwordHash = await bcryptService.generateHash(password);
+        const newUser = new UserEntity(login, email, passwordHash);
+
+
+        await usersRepository.create(newUser);
+
+
+        nodemailerService
+            .sendEmail(
+                newUser.email,
+                newUser.emailConfirmation.confirmationCode,
+                emailExamples.registrationEmail
+            )
+            .catch(er => console.error('error in send email:', er));
+
+        return newUser;
     }
 
 };

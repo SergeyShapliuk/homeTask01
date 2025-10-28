@@ -4,23 +4,27 @@ export const nodemailerService = {
     async sendEmail(
         email: string,
         code: string,
-        template: (code: string) => string,
+        template: (code: string) => string
     ): Promise<boolean> {
+        console.log("email", email);
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                // user: appConfig.EMAIL,
-                // pass: appConfig.EMAIL_PASS,
+                user: "sergeshapluk@gmail.com",
+                pass: process.env.PASS
             },
+            tls: {
+                rejectUnauthorized: false
+            }
         });
 
         let info = await transporter.sendMail({
-            from: '"Kek 👻" <codeSender>',
+            from: "\"Kek 👻\" <sergeshapluk@gmail.com>",
             to: email,
             subject: "Your code is here",
-            html: template(code), // html body
+            html: template(code) // html body
         });
 
         return !!info;
-    },
+    }
 };
