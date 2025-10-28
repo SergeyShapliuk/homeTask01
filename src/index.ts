@@ -19,12 +19,12 @@ export const initApp = async () => {
     isInitialized = true;
 
     // Локальный запуск
-    if (process.env.NODE_ENV !== 'production') {
+    // if (process.env.NODE_ENV !== 'production') {
       const PORT = SETTINGS.PORT;
       app.listen(PORT, () => {
         console.log(`🚀 Server listening on port ${PORT}`);
       });
-    }
+    // }
   }
 
   return appInstance;
