@@ -12,14 +12,13 @@ export const nodemailerService = {
         }
         console.log("email", email);
         let transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true, // true для 465, false для 587
             auth: {
                 user: "sergeshapluk@gmail.com",
                 pass: process.env.PASS ?? "zbws jgqp nfdt jzzr"
             },
-            tls: {
-                rejectUnauthorized: process.env.NODE_ENV === "production"
-            }
         });
 
         let info = await transporter.sendMail({
