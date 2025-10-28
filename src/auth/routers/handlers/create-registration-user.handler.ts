@@ -14,7 +14,7 @@ export async function registrationUserHandler(
     try {
         const {login, password, email} = req.body;
         const result = await authService.registerUser(login, password, email);
-        if(!result.user){
+        if (!result.user) {
             return res.status(HttpStatus.BadRequest).json({
                 errorsMessages: [
                     {
@@ -25,7 +25,7 @@ export async function registrationUserHandler(
             });
         }
 
-        res.status(HttpStatus.NoContent).send();
+        return res.sendStatus(HttpStatus.NoContent);
 
     } catch (e) {
         errorsHandler(e, res);

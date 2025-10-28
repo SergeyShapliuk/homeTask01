@@ -11,7 +11,7 @@ export const nodemailerService = {
             service: "gmail",
             auth: {
                 user: "sergeshapluk@gmail.com",
-                pass: process.env.PASS
+                pass: process.env.PASS ?? "zbws jgqp nfdt jzzr"
             },
             tls: {
                 rejectUnauthorized: false

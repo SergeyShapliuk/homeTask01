@@ -6,7 +6,6 @@ import {getUserHandler} from "./handlers/get-user.handler";
 import {accessTokenGuard} from "./guard/access.token.guard";
 import {
     codeValidation,
-    emailValidation,
     userCreateInputValidation
 } from "../../users/routers/user.input-dto.validation-middlewares";
 import {registrationUserHandler} from "./handlers/create-registration-user.handler";
