@@ -1,7 +1,7 @@
 import {UserQueryInput} from "../routers/input/user-query.input";
 import {WithId} from "mongodb";
-import {User} from "../domain/user";
 import {userCollection} from "../../db/db";
+import {User} from "../domain/user";
 
 export const usersQwRepository = {
 

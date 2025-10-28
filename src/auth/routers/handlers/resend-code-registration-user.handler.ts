@@ -9,21 +9,21 @@ import {UserEntity} from "../../../users/domain/user.entity";
 
 
 export async function resendCodeHandler(
-    req: Request<{}, {}, AuthAttributes>,
+    req: Request<{}, {}, { email: string }>,
     res: Response
 ) {
     try {
         const {email} = req.body;
-        const newUser = new UserEntity('', email, '');
+        const newUser = new UserEntity("", email, "");
         nodemailerService
             .sendEmail(
                 email,
                 newUser.emailConfirmation.confirmationCode,
                 emailExamples.registrationEmail
             )
-            .catch(er => console.error('error in send email:', er));
+            .catch(er => console.error("error in send email:", er));
 
-        res.status(HttpStatus.NoContent).send('Resend code');
+        res.status(HttpStatus.NoContent).send("Resend code");
     } catch (e) {
         errorsHandler(e, res);
     }

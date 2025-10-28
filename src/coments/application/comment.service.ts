@@ -2,7 +2,6 @@ import {WithId} from "mongodb";
 import {commentRepository} from "../repositories/comment.repository";
 import {CommentQueryInput} from "../routers/input/comment-query.input";
 import {CommentAttributes} from "./dtos/comment-attributes";
-import {usersQwRepository} from "../repositories/users.query.repository";
 import {bcryptService} from "../../core/adapters/bcrypt.service";
 import {Comment} from "../domain/comment";
 import {PostAttributes} from "../../posts/application/dtos/post-attributes";
@@ -15,6 +14,9 @@ import {PostSortField} from "../../posts/routers/input/post-sort-field";
 import {CommentSortField} from "../routers/input/comment-sort-field";
 import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
 import {usersRepository} from "../../users/repositories/users.repository";
+import {usersQwRepository} from "../../users/repositories/users.query.repository";
+import {commentsQwRepository} from "../repositories/comments.query.repository";
+import {User} from "../../users/domain/user";
 
 // export enum PostErrorCode {
 //     AlreadyFinished = 'RIDE_ALREADY_FINISHED',
@@ -24,8 +26,8 @@ export const commentService = {
 
     async findMany(
         queryDto: CommentQueryInput
-    ): Promise<{ items: WithId<Comment>[]; totalCount: number }> {
-        return usersQwRepository.findMany(queryDto);
+    ): Promise<{ items: WithId<User>[]; totalCount: number }> {
+        return commentsQwRepository.findMany(queryDto);
     },
 
     async findByIdOrFail(id: string): Promise<WithId<Comment>> {

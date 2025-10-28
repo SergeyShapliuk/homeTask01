@@ -4,23 +4,23 @@ export class UserEntity {
     login: string;
     email: string;
     passwordHash: string;
-    createdAt: Date;
+    createdAt: string;
     emailConfirmation: {
         confirmationCode: string;
-        expirationDate: Date;
+        expirationDate: string;
         isConfirmed: boolean;
-    }
+    };
 
     constructor(login: string, email: string, hash: string) {
-        this.login = login
-        this.email = email
-        this.passwordHash = hash
-        this.createdAt = new Date()
+        this.login = login;
+        this.email = email;
+        this.passwordHash = hash;
+        this.createdAt = new Date().toISOString();
         this.emailConfirmation = {
-            expirationDate: new Date(),
+            expirationDate: new Date().toISOString(),
             confirmationCode: randomUUID(),
             isConfirmed: false
-        }
+        };
     }
 
 }

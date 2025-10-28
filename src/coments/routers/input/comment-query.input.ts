@@ -3,6 +3,6 @@ import { CommentSortField } from './comment-sort-field';
 
 export type CommentQueryInput = PaginationAndSorting<CommentSortField> &
   Partial<{
-      // searchLoginTerm: string;
-      // searchEmailTerm: string;
+      searchLoginTerm: string;
+      searchEmailTerm: string;
   }>;

@@ -5,9 +5,10 @@ import {CommentCreateInput} from "../../../coments/routers/input/comment-create.
 import {commentService} from "../../../coments/application/comment.service";
 import {mapToCommentOutputUtil} from "../../../coments/routers/mappers/map-to-comment-output.util";
 import {RequestWithParamsAndBodyAndUserId} from "../../../core/types/requests";
+import {IdType} from "../../../core/types/id";
 
 export async function createCommentPostByIdHandler(
-    req: RequestWithParamsAndBodyAndUserId<{ postId: string }, {}, CommentCreateInput>,
+    req: RequestWithParamsAndBodyAndUserId<{ postId: string }, CommentCreateInput,IdType>,
     res: Response
 ) {
     try {

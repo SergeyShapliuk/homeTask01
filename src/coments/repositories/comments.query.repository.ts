@@ -1,9 +1,9 @@
 import {CommentQueryInput} from "../routers/input/comment-query.input";
 import {WithId} from "mongodb";
-import {User} from "../domain/comment";
 import {userCollection} from "../../db/db";
+import {User} from "../../users/domain/user";
 
-export const usersQwRepository = {
+export const commentsQwRepository = {
 
     async findMany(
         queryDto: CommentQueryInput
