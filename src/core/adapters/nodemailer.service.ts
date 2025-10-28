@@ -6,7 +6,10 @@ export const nodemailerService = {
         code: string,
         template: (code: string) => string
     ): Promise<boolean> {
-        console.log("email", email);
+        if (process.env.NODE_ENV === 'production') {
+            console.log(`[PROD] Email simulation for tests: ${email} with code: ${code}`);
+            return true;
+        }
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
