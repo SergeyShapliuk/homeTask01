@@ -13,19 +13,21 @@ export async function registrationUserHandler(
 ) {
     try {
         const {login, password, email} = req.body;
-        const user=await authService.registerUser(login, password, email);
-        if(!user){
-            res.status(HttpStatus.BadRequest).send({
+        const user = await authService.registerUser(login, password, email);
+        if (!user) {
+            res.status(HttpStatus.BadRequest).json({
                 errorsMessages: [
                     {
-                        message: "User with this email or login already exists", // строка!
-                        field: "someField" // или "login"
+                        message: "User with this email or login already exists",
+                        field: "email" // или определите какое поле дублируется
                     }
                 ]
             });
+            return;
         }
 
-        res.status(HttpStatus.NoContent).send("Created");
+        res.status(HttpStatus.NoContent).send();
+
     } catch (e) {
         errorsHandler(e, res);
     }
