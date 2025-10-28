@@ -13,7 +13,10 @@ export async function registrationUserHandler(
 ) {
     try {
         const {login, password, email} = req.body;
-        await authService.registerUser(login, password, email);
+        const user=await authService.registerUser(login, password, email);
+        if(!user){
+            res.status(HttpStatus.BadRequest).send("User already exist");
+        }
 
         res.status(HttpStatus.NoContent).send("Created");
     } catch (e) {

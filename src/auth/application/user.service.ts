@@ -5,7 +5,7 @@ import {jwtService} from "../../core/adapters/jwt.service";
 import {nodemailerService} from "../../core/adapters/nodemailer.service";
 import {emailExamples} from "../../core/adapters/emailExamples";
 import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
-import { UserEntity} from "../../users/domain/user.entity";
+import {UserEntity} from "../../users/domain/user.entity";
 
 
 export const authService = {
@@ -49,7 +49,7 @@ export const authService = {
     ): Promise<UserEntity | null> {
         const user = await usersRepository.doesExistByLoginOrEmail(login, email);
         if (user) {
-            throw new RepositoryNotFoundError("User already exist");
+            return null;
         }
         const passwordHash = await bcryptService.generateHash(password);
         const newUser = new UserEntity(login, email, passwordHash);
@@ -57,14 +57,14 @@ export const authService = {
 
         await usersRepository.create(newUser);
 
-console.log('newUser.emailConfirmation.confirmationCode',newUser.emailConfirmation.confirmationCode)
+        console.log("newUser.emailConfirmation.confirmationCode", newUser.emailConfirmation.confirmationCode);
         nodemailerService
             .sendEmail(
                 newUser.email,
                 newUser.emailConfirmation.confirmationCode,
                 emailExamples.registrationEmail
             )
-            .catch(er => console.error('error in send email:', er));
+            .catch(er => console.error("error in send email:", er));
 
         return newUser;
     }

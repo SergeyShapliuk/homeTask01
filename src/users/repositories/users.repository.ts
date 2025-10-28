@@ -2,7 +2,6 @@ import {ObjectId, WithId} from "mongodb";
 import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
 import {User} from "../domain/user";
 import {userCollection} from "../../db/db";
-import {UserEntity} from "../domain/user.entity";
 
 export const usersRepository = {
 
@@ -20,7 +19,7 @@ export const usersRepository = {
         return res;
     },
 
-    async create(newUser: UserEntity): Promise<string> {
+    async create(newUser: User): Promise<string> {
         const insertResult = await userCollection.insertOne(newUser);
         return insertResult.insertedId.toString();
     },

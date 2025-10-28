@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import {Response} from "express";
 import {HttpStatus} from "../../../core/types/http-ststuses";
 import {errorsHandler} from "../../../core/errors/errors.handler";
 import {CommentCreateInput} from "../../../coments/routers/input/comment-create.input";

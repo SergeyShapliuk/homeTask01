@@ -6,13 +6,12 @@ import {getUserHandler} from "./handlers/get-user.handler";
 import {accessTokenGuard} from "./guard/access.token.guard";
 import {
     codeValidation,
-    emailValidation, loginValidation, passwordValidation,
+    emailValidation,
     userCreateInputValidation
 } from "../../users/routers/user.input-dto.validation-middlewares";
 import {registrationUserHandler} from "./handlers/create-registration-user.handler";
 import {confirmCodeHandler} from "./handlers/confirm-registration-user.handler";
 import {resendCodeHandler} from "./handlers/resend-code-registration-user.handler";
-import {body} from "express-validator";
 
 export const authRouter = Router({});
 
@@ -36,10 +35,7 @@ authRouter
 
     .post(
         "/registration",
-        [loginValidation, passwordValidation, body("email")
-            .isEmail()
-            .withMessage("Invalid email format")
-            .normalizeEmail()],
+        userCreateInputValidation,
         inputValidationResultMiddleware,
         registrationUserHandler
     )
