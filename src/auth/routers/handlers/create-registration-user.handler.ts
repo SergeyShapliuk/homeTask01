@@ -15,7 +15,14 @@ export async function registrationUserHandler(
         const {login, password, email} = req.body;
         const user=await authService.registerUser(login, password, email);
         if(!user){
-            res.status(HttpStatus.BadRequest).send("User already exist");
+            res.status(HttpStatus.BadRequest).send({
+                errorsMessages: [
+                    {
+                        message: "User with this email or login already exists", // строка!
+                        field: "someField" // или "login"
+                    }
+                ]
+            });
         }
 
         res.status(HttpStatus.NoContent).send("Created");
