@@ -13,9 +13,6 @@ export const nodemailerService = {
                 user: "sergeshapluk@gmail.com",
                 pass: process.env.PASS ?? "zbws jgqp nfdt jzzr"
             },
-            tls: {
-                rejectUnauthorized: false
-            }
         });
 
         let info = await transporter.sendMail({
