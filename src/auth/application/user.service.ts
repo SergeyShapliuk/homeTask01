@@ -46,10 +46,13 @@ export const authService = {
         login: string,
         password: string,
         email: string
-    ): Promise<UserEntity | null> {
-        const user = await usersRepository.doesExistByLoginOrEmail(login, email);
-        if (user) {
-            return null;
+    ): Promise<{user: UserEntity | null, duplicateField?: 'login' | 'email'}> {
+        const existenceCheck  = await usersRepository.doesExistByLoginOrEmail(login, email);
+        if (existenceCheck.exists) {
+            return {
+                user: null,
+                duplicateField: existenceCheck.field
+            };
         }
         const passwordHash = await bcryptService.generateHash(password);
         const newUser = new UserEntity(login, email, passwordHash);
@@ -66,7 +69,7 @@ export const authService = {
             )
             .catch(er => console.error("error in send email:", er));
 
-        return newUser;
+        return { user: newUser };
     }
 
 };

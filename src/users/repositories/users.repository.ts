@@ -46,11 +46,19 @@ export const usersRepository = {
     async doesExistByLoginOrEmail(
         login: string,
         email: string
-    ): Promise<boolean> {
-        const user = await userCollection.findOne({
-            $or: [{ email }, { login }],
-        });
-        return !!user;
-    },
+    ): Promise<{exists: boolean, field?: 'login' | 'email'}> {
+        // Сначала проверяем логин
+        const existingByLogin = await userCollection.findOne({ login });
+        if (existingByLogin) {
+            return { exists: true, field: 'login' };
+        }
 
+        // Затем проверяем email
+        const existingByEmail = await userCollection.findOne({ email });
+        if (existingByEmail) {
+            return { exists: true, field: 'email' };
+        }
+
+        return { exists: false };
+    },
 };
