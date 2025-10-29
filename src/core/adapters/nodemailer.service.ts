@@ -29,7 +29,6 @@ export const nodemailerService = {
             // logger: true, // Log to console
             // debug: true // Include SMTP traffic in the logs
         });
-        console.log("transporter", JSON.stringify(transporter));
 
         let info = await transporter.sendMail({
             from: `\"Kek 👻\" <${process.env.GMAIL_USER}>`,
