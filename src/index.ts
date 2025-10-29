@@ -2,6 +2,9 @@ import express from "express";
 import {setupApp} from "./setup-app";
 import {SETTINGS} from "./core/settings/settings";
 import {runDB} from "./db/db";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let isInitialized = false;
 let appInstance: express.Application;
