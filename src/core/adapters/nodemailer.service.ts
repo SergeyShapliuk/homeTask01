@@ -8,7 +8,7 @@ export const nodemailerService = {
     ): Promise<boolean> {
         if (process.env.NODE_ENV === "production") {
             console.log(`[PROD] Email simulation for tests: ${email} with code: ${code}`);
-            return true;
+            // return true;
         }
         console.log("email", email);
         console.log("GMAIL_USER", process.env.GMAIL_USER);
@@ -22,9 +22,9 @@ export const nodemailerService = {
                 clientSecret: process.env.GMAIL_CLIENT_SECRET,
                 refreshToken: process.env.GMAIL_REFRESH_TOKEN
             },
-            tls: {
-                rejectUnauthorized: false
-            },
+            // tls: {
+            //     rejectUnauthorized: false
+            // },
             logger: true, // Log to console
             debug: true // Include SMTP traffic in the logs
         });
