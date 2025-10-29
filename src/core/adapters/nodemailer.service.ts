@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import {variables} from "../../config/variables";
 
 export const nodemailerService = {
     async sendEmail(
@@ -11,11 +12,16 @@ export const nodemailerService = {
             return true;
         }
         console.log("email", email);
+        console.log("GMAIL_USER", process.env.GMAIL_USER ?? variables.GMAIL_USER);
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "sergeshapluk@gmail.com",
-                pass: process.env.PASS_SMTP
+                type: "OAuth2",
+                user: process.env.GMAIL_USER ?? variables.GMAIL_USER,
+                // pass: process.env.PASS_SMTP
+                clientId: process.env.GMAIL_CLIENT_ID ?? variables.GMAIL_CLIENT_ID,
+                clientSecret: process.env.GMAIL_CLIENT_SECRET ?? variables.GMAIL_CLIENT_SECRET,
+                refreshToken: process.env.GMAIL_REFRESH_TOKEN ?? variables.GMAIL_REFRESH_TOKEN
             },
             tls: {
                 rejectUnauthorized: false
@@ -25,7 +31,7 @@ export const nodemailerService = {
         });
 
         let info = await transporter.sendMail({
-            from: "\"Kek 👻\" <sergeshapluk@gmail.com>",
+            from: `\"Kek 👻\" <${process.env.GMAIL_USER ?? variables.GMAIL_USER}>`,
             to: email,
             subject: "Your code is here",
             html: template(code) // html body
