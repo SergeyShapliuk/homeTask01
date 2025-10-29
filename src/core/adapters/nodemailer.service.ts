@@ -14,7 +14,7 @@ export const nodemailerService = {
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "sergeshapluk.dev@gmail.com",
+                user: "sergeshapluk@gmail.com",
                 pass: process.env.PASS_SMTP
             },
             tls: {
@@ -25,7 +25,7 @@ export const nodemailerService = {
         });
 
         let info = await transporter.sendMail({
-            from: "\"Kek 👻\" <sergeshapluk.dev@gmail.com>",
+            from: "\"Kek 👻\" <sergeshapluk@gmail.com>",
             to: email,
             subject: "Your code is here",
             html: template(code) // html body
