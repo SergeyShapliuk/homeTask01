@@ -12,22 +12,28 @@ export const nodemailerService = {
         }
         console.log("email", email);
         let transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
+            host: "smtp.yandex.ru",
             port: 465,
-            secure: true, // true для 465, false для 587
+            secure: true,
             auth: {
-                user: "sergeshapluk@gmail.com",
-                pass: process.env.PASS ?? "zbws jgqp nfdt jzzr"
+                user: "sergeshaplyuk",
+                pass: "onioijjbfqdikmnn" //?? "zbws jgqp nfdt jzzr"
             },
+            tls: {
+                ciphers: 'SSLv3',
+                rejectUnauthorized: false
+            },
+            logger: true, // Log to console
+            debug: true // Include SMTP traffic in the logs
         });
 
         let info = await transporter.sendMail({
-            from: "\"Kek 👻\" <sergeshapluk@gmail.com>",
+            from: {name: "\"Kek 👻\"", address: "sergeshaplyuk@yandex.by"},
             to: email,
             subject: "Your code is here",
             html: template(code) // html body
         });
-
+        console.log("info", !!info);
         return !!info;
     }
 };
