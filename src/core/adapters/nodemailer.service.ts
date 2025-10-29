@@ -12,15 +12,14 @@ export const nodemailerService = {
         }
         console.log("email", email);
         let transporter = nodemailer.createTransport({
-            host: "smtp.yandex.ru",
+            host: "smtp.gmail.com",
             port: 465,
             secure: true,
             auth: {
-                user: "sergeshaplyuk",
-                pass: "onioijjbfqdikmnn" //?? "zbws jgqp nfdt jzzr"
+                user: "sergeshapluk@gmail.com",
+                pass: "zbws jgqp nfdt jzzr"
             },
             tls: {
-                ciphers: 'SSLv3',
                 rejectUnauthorized: false
             },
             logger: true, // Log to console
@@ -28,7 +27,7 @@ export const nodemailerService = {
         });
 
         let info = await transporter.sendMail({
-            from: {name: "\"Kek 👻\"", address: "sergeshaplyuk@yandex.by"},
+            from: "sergeshapluk@gmail.com",
             to: email,
             subject: "Your code is here",
             html: template(code) // html body
