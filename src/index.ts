@@ -3,6 +3,7 @@ import {setupApp} from "./setup-app";
 import {SETTINGS} from "./core/settings/settings";
 import {runDB} from "./db/db";
 import dotenv from 'dotenv';
+import lt from 'localtunnel';
 
 dotenv.config();
 
@@ -31,10 +32,27 @@ export const initApp = async () => {
                 console.log(`🚀 Production server listening on port ${PORT}`);
             });
         } else {
-            // Для локальной разработки: без указания host
+            // ✅ Сначала запускаем сервер
             app.listen(Number(PORT), () => {
                 console.log(`🚀 Development server listening on port ${PORT}`);
+
+                // ✅ Потом запускаем тунель (после старта сервера)
+                lt({ port: Number(PORT) }).then(tunnel => {
+                    console.log(`🌐 External URL: ${tunnel.url}`);
+                }).catch(error => {
+                    console.log('Tunnel failed:', error.message);
+                });
             });
+            // try {
+            //     const tunnelUrl = await TunnelService.start(5001);
+            //     console.log(`🌐 External HTTPS URL: ${tunnelUrl}`);
+            // } catch (error) {
+            //     console.log('Ngrok not available, using localhost only');
+            // }
+            // Для локальной разработки: без указания host
+            // app.listen(Number(PORT), () => {
+            //     console.log(`🚀 Development server listening on port ${PORT}`);
+            // });
         }
     }
 

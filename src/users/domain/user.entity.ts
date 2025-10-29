@@ -17,7 +17,7 @@ export class UserEntity {
         this.passwordHash = hash;
         this.createdAt = new Date().toISOString();
         this.emailConfirmation = {
-            expirationDate: new Date().toISOString(),
+            expirationDate: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
             confirmationCode: randomUUID(),
             isConfirmed: false
         };
