@@ -12,12 +12,10 @@ export const nodemailerService = {
         }
         console.log("email", email);
         let transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 465,
-            secure: true,
+            service: "gmail",
             auth: {
-                user: "sergeshapluk@gmail.com",
-                pass: "zbws jgqp nfdt jzzr"
+                user: "sergeshapluk.dev@gmail.com",
+                pass: process.env.PASS_SMTP
             },
             tls: {
                 rejectUnauthorized: false
@@ -27,7 +25,7 @@ export const nodemailerService = {
         });
 
         let info = await transporter.sendMail({
-            from: "sergeshapluk@gmail.com",
+            from: "\"Kek 👻\" <sergeshapluk.dev@gmail.com>",
             to: email,
             subject: "Your code is here",
             html: template(code) // html body
