@@ -4,6 +4,7 @@ import {errorsHandler} from "../../../core/errors/errors.handler";
 import {RequestWithUserId} from "../../../core/types/requests";
 import {IdType} from "../../../core/types/id";
 import {authService} from "../../application/auth.service";
+import {isTokenBlacklisted} from "../guard/refreshTokenBlacklistService";
 
 
 export async function updateRefreshTokensHandler(
@@ -16,6 +17,10 @@ export async function updateRefreshTokensHandler(
 
         console.log("updateRefreshTokensHandler", oldRefreshToken);
         if (!userId) return res.sendStatus(HttpStatus.Unauthorized);
+
+        const isBlackListed = await isTokenBlacklisted(oldRefreshToken);
+
+        if (isBlackListed) return res.sendStatus(HttpStatus.Unauthorized);
 
         const tokens = await authService.refreshTokens(userId, oldRefreshToken);
 
