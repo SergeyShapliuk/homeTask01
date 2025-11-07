@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {HttpStatus} from "../../../core/types/http-ststuses";
 import {errorsHandler} from "../../../core/errors/errors.handler";
 import {AuthAttributes} from "../../application/dtos/auth-attributes";
-import {authService} from "../../application/user.service";
+import {authService} from "../../application/auth.service";
 
 
 export async function loginUserHandler(
@@ -11,11 +11,14 @@ export async function loginUserHandler(
 ) {
     try {
         const {loginOrEmail, password} = req.body;
-        const accessToken = await authService.loginUser({loginOrEmail, password});
+        const result = await authService.loginUser({loginOrEmail, password});
 
-        if (!accessToken) return res.sendStatus(HttpStatus.Unauthorized);
-        console.log(accessToken)
-        res.status(HttpStatus.Ok).send(accessToken);
+        if (!result?.accessToken || !result?.refreshToken) return res.sendStatus(HttpStatus.Unauthorized);
+        console.log({result});
+        const {accessToken, refreshToken} = result;
+
+        res.cookie("refreshToken", refreshToken, {httpOnly: true, secure: true});
+        res.status(HttpStatus.Ok).send({accessToken});
     } catch (e) {
         errorsHandler(e, res);
     }

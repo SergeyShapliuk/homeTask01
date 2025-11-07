@@ -12,6 +12,10 @@ import {registrationUserHandler} from "./handlers/create-registration-user.handl
 import {confirmCodeHandler} from "./handlers/confirm-registration-user.handler";
 import {resendCodeHandler} from "./handlers/resend-code-registration-user.handler";
 import {body} from "express-validator";
+import {createRefreshTokensHandler} from "./handlers/create-refresh-tokens.handler";
+import {invalidRefreshTokensHandler} from "./handlers/invalid-refresh-tokens.handler";
+import {updateRefreshTokensHandler} from "./handlers/update-refresh-tokens.handler";
+import {refreshTokenGuard} from "./guard/reftesh.token.guard";
 
 const EMAIL_PATTERN = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
@@ -84,5 +88,20 @@ authRouter
         emailValidation,
         inputValidationResultMiddleware,
         resendCodeHandler
+    )
+
+    .post(
+        "/refresh-token",
+        refreshTokenGuard,
+        inputValidationResultMiddleware,
+        updateRefreshTokensHandler
+    )
+
+    .post(
+        "/logout",
+        refreshTokenGuard,
+        inputValidationResultMiddleware,
+        invalidRefreshTokensHandler
     );
+
 

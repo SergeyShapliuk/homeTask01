@@ -12,6 +12,8 @@ export async function getUserHandler(
 ) {
     try {
         const userId = req.user?.id as string;
+        const refreshToken = req.cookies.refreshToken;
+
         if (!userId) return res.sendStatus(HttpStatus.Unauthorized);
 
         const me = await usersRepository.findById(userId);

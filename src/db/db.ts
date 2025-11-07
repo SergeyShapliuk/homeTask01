@@ -6,12 +6,14 @@ import {Post} from "../posts/domain/post";
 import {DBVideo} from "../core/types/dbVideo";
 import {User} from "../users/domain/user";
 import {Comment} from "../coments/domain/comment";
+import {BlacklistedToken, ensureTTLIndex} from "../auth/routers/guard/refreshTokenBlacklistService";
 
 // const VIDEOS_COLLECTION_NAME = "videos";
 const BLOGS_COLLECTION_NAME = "blogs";
 const POSTS_COLLECTION_NAME = "posts";
 const COMMENTS_COLLECTION_NAME = "comments";
 const USERS_COLLECTION_NAME = "users";
+const TOKEN_BLACKLIST_COLLECTION = "tokenBlacklist";
 
 export let client: MongoClient;
 // export let videoCollection: Collection<Video>;
@@ -19,6 +21,8 @@ export let blogCollection: Collection<Blog>;
 export let postCollection: Collection<Post>;
 export let commentCollection: Collection<Comment>;
 export let userCollection: Collection<User>;
+export let tokenBlacklistCollection: Collection<BlacklistedToken>;
+
 
 // Подключения к бд
 export async function runDB(url: string): Promise<void> {
@@ -31,6 +35,9 @@ export async function runDB(url: string): Promise<void> {
     postCollection = db.collection<Post>(POSTS_COLLECTION_NAME);
     commentCollection = db.collection<Comment>(COMMENTS_COLLECTION_NAME);
     userCollection = db.collection<User>(USERS_COLLECTION_NAME);
+    tokenBlacklistCollection = db.collection<BlacklistedToken>(TOKEN_BLACKLIST_COLLECTION);
+
+    // await ensureTTLIndex();
 
     try {
         await client.connect();

@@ -3,8 +3,13 @@ import jwt from "jsonwebtoken";
 
 export const jwtService = {
     async createToken(userId: string): Promise<string> {
-        return jwt.sign({userId},'createToken-for-me', {
-            expiresIn: 3000
+        return jwt.sign({userId}, "createToken-for-me", {
+            expiresIn: 10
+        });
+    },
+    async createRefreshToken(userId: string): Promise<string> {
+        return jwt.sign({userId}, "createToken-for-me", {
+            expiresIn: 20
         });
     },
     async decodeToken(token: string): Promise<any> {
@@ -17,7 +22,7 @@ export const jwtService = {
     },
     async verifyToken(token: string): Promise<{ userId: string } | null> {
         try {
-            return jwt.verify(token, 'createToken-for-me') as { userId: string };
+            return jwt.verify(token, "createToken-for-me") as { userId: string };
         } catch (error) {
             console.error("Token verify some error");
             return null;

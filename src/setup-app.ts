@@ -15,9 +15,11 @@ import { testingRouter } from './testing/routers/testing.router';
 import {usersRouter} from "./users/routers/users.router";
 import {authRouter} from "./auth/routers/auth.router";
 import {commentsRouter} from "./coments/routers/comments.router";
+import cookieParser from "cookie-parser";
 
 export const setupApp = (app: Express) => {
   app.use(express.json()); // middleware для парсинга JSON в теле запроса
+  app.use(cookieParser())
 
   app.use(VIDEOS_PATH, videoRouter); // Подключаем роутеры
   app.use(BLOGS_PATH, blogsRouter); // Подключаем роутеры

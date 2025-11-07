@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {HttpStatus} from "../../../core/types/http-ststuses";
 import {errorsHandler} from "../../../core/errors/errors.handler";
 import {AuthAttributes} from "../../application/dtos/auth-attributes";
-import {authService} from "../../application/user.service";
+import {authService} from "../../application/auth.service";
 import {UserAttributes} from "../../../users/application/dtos/user-attributes";
 import {RepositoryNotFoundError} from "../../../core/errors/repository-not-found.error";
 

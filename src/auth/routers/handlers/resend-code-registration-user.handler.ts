@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {HttpStatus} from "../../../core/types/http-ststuses";
 import {errorsHandler} from "../../../core/errors/errors.handler";
 import {AuthAttributes} from "../../application/dtos/auth-attributes";
-import {authService} from "../../application/user.service";
+import {authService} from "../../application/auth.service";
 import {nodemailerService} from "../../../core/adapters/nodemailer.service";
 import {emailExamples} from "../../../core/adapters/emailExamples";
 import {UserEntity} from "../../../users/domain/user.entity";

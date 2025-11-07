@@ -2,15 +2,15 @@ import express from "express";
 import {setupApp} from "./setup-app";
 import {SETTINGS} from "./core/settings/settings";
 import {runDB} from "./db/db";
-import dotenv from 'dotenv';
-import lt from 'localtunnel';
+import dotenv from "dotenv";
+import lt from "localtunnel";
 
 dotenv.config();
 
 let isInitialized = false;
 let appInstance: express.Application;
 
-export const initApp = async () => {
+const initApp = async () => {
     if (!isInitialized) {
         const app = express();
         setupApp(app);
@@ -37,11 +37,11 @@ export const initApp = async () => {
                 console.log(`🚀 Development server listening on port ${PORT}`);
 
                 // ✅ Потом запускаем тунель (после старта сервера)
-                lt({ port: Number(PORT) }).then(tunnel => {
-                    console.log(`🌐 External URL: ${tunnel.url}`);
-                }).catch(error => {
-                    console.log('Tunnel failed:', error.message);
-                });
+                // lt({ port: Number(PORT) }).then(tunnel => {
+                //     console.log(`🌐 External URL: ${tunnel.url}`);
+                // }).catch(error => {
+                //     console.log('Tunnel failed:', error.message);
+                // });
             });
             // try {
             //     const tunnelUrl = await TunnelService.start(5001);

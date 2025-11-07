@@ -4,15 +4,15 @@ import {usersRepository} from "../../users/repositories/users.repository";
 import {jwtService} from "../../core/adapters/jwt.service";
 import {nodemailerService} from "../../core/adapters/nodemailer.service";
 import {emailExamples} from "../../core/adapters/emailExamples";
-import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
 import {UserEntity} from "../../users/domain/user.entity";
+import {addToBlacklist} from "../routers/guard/refreshTokenBlacklistService";
 
 
 export const authService = {
 
     async loginUser(
         queryDto: AuthAttributes
-    ): Promise<{ accessToken: string } | null> {
+    ): Promise<{ accessToken: string, refreshToken: string } | null> {
         const isCorrectCredentialsId = await this.checkUserCredentials(
             queryDto.loginOrEmail,
             queryDto.password
@@ -22,8 +22,27 @@ export const authService = {
             return null;
         }
         const accessToken = await jwtService.createToken(isCorrectCredentialsId);
+        const refreshToken = await jwtService.createRefreshToken(isCorrectCredentialsId);
 
-        return {accessToken};
+        return {accessToken, refreshToken};
+    },
+
+    async refreshTokens(
+        userId: string, oldRefreshToken: string
+    ): Promise<{ accessToken: string, refreshToken: string } | null> {
+        const user = await usersRepository.findById(userId);
+
+        if (!user?._id) {
+            return null;
+        }
+        await addToBlacklist(oldRefreshToken, userId);
+        const accessToken = await jwtService.createToken(userId);
+        const refreshToken = await jwtService.createRefreshToken(userId);
+        if (!accessToken || !refreshToken) {
+            return null;
+        }
+
+        return {accessToken, refreshToken};
     },
 
     async checkUserCredentials(
@@ -46,8 +65,8 @@ export const authService = {
         login: string,
         password: string,
         email: string
-    ): Promise<{user: UserEntity | null, duplicateField?: 'login' | 'email'}> {
-        const existenceCheck  = await usersRepository.doesExistByLoginOrEmail(login, email);
+    ): Promise<{ user: UserEntity | null, duplicateField?: "login" | "email" }> {
+        const existenceCheck = await usersRepository.doesExistByLoginOrEmail(login, email);
         if (existenceCheck.exists) {
             return {
                 user: null,
@@ -69,7 +88,7 @@ export const authService = {
             )
             .catch(er => console.error("error in send email:", er));
 
-        return { user: newUser };
+        return {user: newUser};
     }
 
 };
