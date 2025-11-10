@@ -78,6 +78,12 @@ export const sessionsRepository = {
             throw new RepositoryNotFoundError("User not exist");
         }
         return;
+    },
+
+    async deleteByDeviceId(deviceId: string): Promise<boolean> {
+        const result = await devicesCollection.deleteOne({ deviceId });
+        console.log(`Delete operation for device ${deviceId}:`, result.deletedCount);
+        return result.deletedCount > 0;
     }
 
 };
