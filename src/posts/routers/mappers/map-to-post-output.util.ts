@@ -3,7 +3,7 @@ import { PostOutput } from '../output/post.output';
 import { ResourceType } from '../../../core/types/resource-type';
 import { Post } from '../../domain/post';
 
-// export function mapToCommentOutputUtil(post: WithId<User>): CommentOutput {
+// export function mapToSessionOutputUtil(post: WithId<User>): CommentOutput {
 export function mapToPostOutputUtil(post: WithId<Post>): any {
   // return {
   //     data: {

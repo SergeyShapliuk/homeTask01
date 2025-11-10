@@ -3,6 +3,8 @@ import {HttpStatus} from "../../../core/types/http-ststuses";
 import {errorsHandler} from "../../../core/errors/errors.handler";
 import {AuthAttributes} from "../../application/dtos/auth-attributes";
 import {authService} from "../../application/auth.service";
+import {SessionDevice} from "../../../securityDevices/domain/sessionDevice";
+import {jwtService} from "../../../core/adapters/jwt.service";
 
 
 export async function loginUserHandler(
@@ -11,10 +13,11 @@ export async function loginUserHandler(
 ) {
     try {
         const {loginOrEmail, password} = req.body;
-        const result = await authService.loginUser({loginOrEmail, password});
+        const result = await authService.loginUser({loginOrEmail, password}, req);
 
-        if (!result?.accessToken || !result?.refreshToken) return res.sendStatus(HttpStatus.Unauthorized);
+        if (!result || !result?.accessToken || !result?.refreshToken) return res.sendStatus(HttpStatus.Unauthorized);
         console.log({result});
+
         const {accessToken, refreshToken} = result;
 
         res.cookie("refreshToken", refreshToken, {httpOnly: true, secure: true});
@@ -23,3 +26,4 @@ export async function loginUserHandler(
         errorsHandler(e, res);
     }
 }
+

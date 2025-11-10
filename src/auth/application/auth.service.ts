@@ -6,12 +6,16 @@ import {nodemailerService} from "../../core/adapters/nodemailer.service";
 import {emailExamples} from "../../core/adapters/emailExamples";
 import {UserEntity} from "../../users/domain/user.entity";
 import {addToBlacklist} from "../routers/guard/refreshTokenBlacklistService";
+import {SessionDevice} from "../../securityDevices/domain/sessionDevice";
+import {Request} from "express";
+import {sessionsRepository} from "../../securityDevices/repositories/sessions.repository";
 
 
 export const authService = {
 
     async loginUser(
-        queryDto: AuthAttributes
+        queryDto: AuthAttributes,
+        req: Request
     ): Promise<{ accessToken: string, refreshToken: string } | null> {
         const isCorrectCredentialsId = await this.checkUserCredentials(
             queryDto.loginOrEmail,
@@ -23,6 +27,21 @@ export const authService = {
         }
         const accessToken = await jwtService.createToken(isCorrectCredentialsId);
         const refreshToken = await jwtService.createRefreshToken(isCorrectCredentialsId);
+
+        const payload = await jwtService.decodeToken(refreshToken);
+        if (!payload?.deviceId) return null;
+
+
+        const sessionData: SessionDevice = {
+            deviceId: payload.deviceId,
+            userId: payload.userId,
+            ip: req.ip ?? "unknown",
+            title: this.getDeviceTitle(req),
+            lastActiveDate: new Date(payload.iat * 1000),
+            expiresAt: new Date(payload.exp * 1000),
+            createdAt: new Date()
+        };
+        await sessionsRepository.create(sessionData);
 
         return {accessToken, refreshToken};
     },
@@ -89,6 +108,11 @@ export const authService = {
             .catch(er => console.error("error in send email:", er));
 
         return {user: newUser};
+    },
+
+    getDeviceTitle(req: Request): string {
+        const agent = req.headers["user-agent"];
+        return agent ? agent.split(" ")[0] : "Unknown device";
     }
 
 };

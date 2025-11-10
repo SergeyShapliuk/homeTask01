@@ -3,7 +3,6 @@ import {HttpStatus} from "../../../core/types/http-ststuses";
 import {errorsHandler} from "../../../core/errors/errors.handler";
 import {RequestWithUserId} from "../../../core/types/requests";
 import {IdType} from "../../../core/types/id";
-import {authService} from "../../application/auth.service";
 import {addToBlacklist, isTokenBlacklisted} from "../guard/refreshTokenBlacklistService";
 
 
@@ -24,7 +23,7 @@ export async function invalidRefreshTokensHandler(
         // if (!result?.accessToken || !result?.refreshToken) return res.sendStatus(HttpStatus.Unauthorized);
         // console.log({result});
         // const {accessToken, refreshToken} = result;
-
+        res.clearCookie("refreshToken");
         res.sendStatus(HttpStatus.NoContent);
     } catch (e) {
         errorsHandler(e, res);
