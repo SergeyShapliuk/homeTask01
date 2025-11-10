@@ -49,6 +49,16 @@ export const authService = {
     async refreshTokens(
         userId: string, oldRefreshToken: string
     ): Promise<{ accessToken: string, refreshToken: string } | null> {
+        const oldPayload =await jwtService.decodeToken(oldRefreshToken) as any;
+        if (!oldPayload?.deviceId) {
+            return null;
+        }
+
+        // Проверяем существование устройства в БД
+        const existingSession = await sessionsRepository.findByDeviceId(oldPayload.deviceId);
+        if (!existingSession || existingSession.userId !== userId) {
+            return null;
+        }
         const user = await usersRepository.findById(userId);
 
         if (!user?._id) {
@@ -56,10 +66,19 @@ export const authService = {
         }
         await addToBlacklist(oldRefreshToken, userId);
         const accessToken = await jwtService.createToken(userId);
-        const refreshToken = await jwtService.createRefreshToken(userId);
+        const refreshToken = await jwtService.createRefreshToken(userId,oldPayload.deviceId);
         if (!accessToken || !refreshToken) {
             return null;
         }
+        const newPayload = await jwtService.decodeToken(refreshToken);
+        if (!newPayload?.iat || !newPayload?.exp) {
+            return null;
+        }
+        await sessionsRepository.updateSession(oldPayload.deviceId, {
+            lastActiveDate: new Date(newPayload.iat * 1000), // обновляем дату активности
+            expiresAt: new Date(newPayload.exp * 1000)       // обновляем срок действия
+            // deviceId и userId остаются прежними
+        })
 
         return {accessToken, refreshToken};
     },

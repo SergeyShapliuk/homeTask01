@@ -41,6 +41,12 @@ export const sessionsRepository = {
         return true;
     },
 
+    async updateSession(deviceId: string, updateData: Partial<SessionDevice>) {
+        await devicesCollection.updateOne(
+            {deviceId},
+            {$set: updateData}
+        );
+    },
     // async findByIdOrFail(userId: string, deviceId: string): Promise<boolean> {
     //     const device = await devicesCollection.findOne({deviceId});
     //     if (!device) {
