@@ -16,6 +16,7 @@ import {createRefreshTokensHandler} from "./handlers/create-refresh-tokens.handl
 import {invalidRefreshTokensHandler} from "./handlers/invalid-refresh-tokens.handler";
 import {updateRefreshTokensHandler} from "./handlers/update-refresh-tokens.handler";
 import {refreshTokenGuard} from "./guard/reftesh.token.guard";
+import {createRateLimit} from "../../core/middlewares/createRateLimit";
 
 const EMAIL_PATTERN = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
@@ -57,7 +58,8 @@ authRouter
 
     .post(
         "/login",
-        authInputValidation,
+        createRateLimit(),
+        ...authInputValidation,
         inputValidationResultMiddleware,
         loginUserHandler
     )
@@ -71,13 +73,15 @@ authRouter
 
     .post(
         "/registration",
-        [loginValidation, passwordValidation, emailValidation],
+        createRateLimit(),
+        ...[loginValidation, passwordValidation, emailValidation],
         inputValidationResultMiddleware,
         registrationUserHandler
     )
 
     .post(
         "/registration-confirmation",
+        createRateLimit(),
         codeValidation,
         inputValidationResultMiddleware,
         confirmCodeHandler
@@ -85,6 +89,7 @@ authRouter
 
     .post(
         "/registration-email-resending",
+        createRateLimit(),
         emailValidation,
         inputValidationResultMiddleware,
         resendCodeHandler
