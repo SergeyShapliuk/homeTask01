@@ -2,6 +2,7 @@ import {body} from "express-validator";
 
 const EMAIL_PATTERN =
     /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const EMAIL_PATTERN_V2 = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 
 export const loginValidation = body("login")
@@ -30,10 +31,10 @@ export const emailValidation = body("email")
     .trim()
     .notEmpty()
     .withMessage("Email is required")
-    .matches(EMAIL_PATTERN)
+    .matches(EMAIL_PATTERN_V2)
     .withMessage("Invalid email format")
-    // .isLength({max: 100})
-    // .withMessage("Email is too long");
+    .isLength({max: 100})
+    .withMessage("Email is too long");
 
 export const codeValidation = body("code")
     .isString()
