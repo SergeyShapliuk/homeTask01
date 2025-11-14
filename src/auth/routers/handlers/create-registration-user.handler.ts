@@ -14,6 +14,7 @@ export async function registrationUserHandler(
     try {
         const {login, password, email} = req.body;
         const result = await authService.registerUser(login, password, email);
+        console.log({result})
         if (!result.user) {
             return res.status(HttpStatus.BadRequest).json({
                 errorsMessages: [

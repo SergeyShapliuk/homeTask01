@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env
+*.env
 axios.tsx
 
 # vercel
@@ -46,3 +47,5 @@ dist
 /yarn.lock
 node_modules
 /node_modules/
+node_modules/@typescript-eslint
+

@@ -8,6 +8,7 @@ export const usersRepository = {
 
 
     async findById(id: string): Promise<WithId<User> | null> {
+        console.log('id',id)
         return userCollection.findOne({_id: new ObjectId(id)});
     },
 
@@ -63,6 +64,19 @@ export const usersRepository = {
         return {exists: false};
     },
 
+    async doesExistByEmail(
+        email: string
+    ): Promise<{ exists: boolean, field?: "login" | "email" }> {
+
+        // Затем проверяем email
+        const existingByEmail = await userCollection.findOne({email});
+        if (existingByEmail) {
+            return {exists: true, field: "email"};
+        }
+
+        return {exists: false};
+    },
+
     async findByConfirmationCode(code: string): Promise<User | null> {
         return await userCollection.findOne({
             "emailConfirmation.confirmationCode": code
@@ -103,6 +117,29 @@ export const usersRepository = {
             return result.modifiedCount === 1;
         } catch (error) {
             console.error("Update confirmation code error:", error);
+            return false;
+        }
+    },
+
+    async updateUserPassword(
+        userId: ObjectId,
+        newPassword: string
+    ): Promise<boolean> {
+        try {
+
+            const result = await userCollection.updateOne(
+                { _id: userId },
+                {
+                    $set: {
+                        passwordHash: newPassword,
+                    }
+                }
+            );
+
+            console.log('Update password result:', result.modifiedCount);
+            return result.modifiedCount === 1;
+        } catch (error) {
+            console.error("Update password error:", error);
             return false;
         }
     }

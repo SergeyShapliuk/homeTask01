@@ -9,6 +9,8 @@ import {addToBlacklist} from "../routers/guard/refreshTokenBlacklistService";
 import {SessionDevice} from "../../securityDevices/domain/sessionDevice";
 import {Request} from "express";
 import {sessionsRepository} from "../../securityDevices/repositories/sessions.repository";
+import {passwordResetService} from "../../core/adapters/passwordResetService";
+import {ObjectId} from "mongodb";
 
 
 export const authService = {
@@ -49,7 +51,7 @@ export const authService = {
     async refreshTokens(
         userId: string, oldRefreshToken: string
     ): Promise<{ accessToken: string, refreshToken: string } | null> {
-        const oldPayload =await jwtService.decodeToken(oldRefreshToken) as any;
+        const oldPayload = await jwtService.decodeToken(oldRefreshToken) as any;
         if (!oldPayload?.deviceId) {
             return null;
         }
@@ -66,7 +68,7 @@ export const authService = {
         }
         await addToBlacklist(oldRefreshToken, userId);
         const accessToken = await jwtService.createToken(userId);
-        const refreshToken = await jwtService.createRefreshToken(userId,oldPayload.deviceId);
+        const refreshToken = await jwtService.createRefreshToken(userId, oldPayload.deviceId);
         if (!accessToken || !refreshToken) {
             return null;
         }
@@ -78,7 +80,7 @@ export const authService = {
             lastActiveDate: new Date(newPayload.iat * 1000), // обновляем дату активности
             expiresAt: new Date(newPayload.exp * 1000)       // обновляем срок действия
             // deviceId и userId остаются прежними
-        })
+        });
 
         return {accessToken, refreshToken};
     },
@@ -127,6 +129,60 @@ export const authService = {
             .catch(er => console.error("error in send email:", er));
 
         return {user: newUser};
+    },
+
+    async recoveryPasswordUser(
+        email: string
+    ): Promise<boolean> {
+        // const existenceCheck = await usersRepository.doesExistByEmail(email);
+        // if (existenceCheck.exists) {
+        //     return {
+        //         user: null,
+        //         duplicateField: existenceCheck.field
+        //     };
+        // }
+
+        const confirmationCode = await passwordResetService.createResetCode(email);
+
+        console.log('confirmationCode',confirmationCode)
+
+        nodemailerService
+            .sendEmail(
+                email,
+                confirmationCode,
+                emailExamples.passwordRecoveryEmail
+            )
+            .catch(er => console.error("error in send email:", er));
+
+        return true;
+    },
+
+    async confirmNewPasswordUser(
+        newPassword: string,
+        recoveryCode: string,
+        refreshToken: string
+    ): Promise<boolean | null> {
+        const payload = await jwtService.decodeToken(refreshToken);
+console.log({payload})
+        if (!payload.userId) {
+            return null;
+        }
+        const user = await usersRepository.findById(payload.userId);
+        console.log({user})
+        if (!user?._id) {
+            return null;
+        }
+        const verify = await passwordResetService.verifyCode(user.email, recoveryCode);
+
+        if (!verify) {
+            return null;
+        }
+
+        const newPasswordHash = await bcryptService.generateHash(newPassword);
+        const update = await usersRepository.updateUserPassword(user._id, newPasswordHash);
+
+
+        return update;
     },
 
     getDeviceTitle(req: Request): string {

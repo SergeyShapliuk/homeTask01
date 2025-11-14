@@ -17,8 +17,11 @@ import {invalidRefreshTokensHandler} from "./handlers/invalid-refresh-tokens.han
 import {updateRefreshTokensHandler} from "./handlers/update-refresh-tokens.handler";
 import {refreshTokenGuard} from "./guard/reftesh.token.guard";
 import {createRateLimit} from "../../core/middlewares/createRateLimit";
+import {recoveryPasswordUserHandler} from "./handlers/recovery-password-user.handler";
+import {confirmPasswordHandler} from "./handlers/confirm-password-user.handler";
 
 const EMAIL_PATTERN = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const RECOVERY_EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 export const loginValidation = body("login")
     .isString()
@@ -50,6 +53,38 @@ export const emailValidation = body("email")
     .withMessage("Invalid email format")
     .isLength({max: 100})
     .withMessage("Email is too long");
+
+export const recoveryEmailValidation = body("email")
+    .isString()
+    .withMessage("Email should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .matches(RECOVERY_EMAIL_PATTERN)
+    .withMessage("Invalid email format")
+    .isLength({max: 100})
+    .withMessage("Email is too long");
+
+export const newPasswordValidation = body("newPassword")
+    .isString()
+    .withMessage("Password should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({min: 6, max: 20})
+    .withMessage("Password must be between 6 and 20 characters");
+
+export const recoveryCodeValidation = body("recoveryCode")
+    .isString()
+    .withMessage("Code should be string")
+    .trim()
+    .notEmpty()
+    .withMessage("Code is required");
+// .matches(EMAIL_PATTERN)
+// .withMessage("Invalid email format")
+// .isLength({max: 100})
+// .withMessage("Email is too long");
+
 export const authRouter = Router({});
 
 // authRouter.use(superAdminGuardMiddleware);
@@ -93,6 +128,22 @@ authRouter
         emailValidation,
         inputValidationResultMiddleware,
         resendCodeHandler
+    )
+
+    .post(
+        "/password-recovery",
+        createRateLimit(),
+        recoveryEmailValidation,
+        inputValidationResultMiddleware,
+        recoveryPasswordUserHandler
+    )
+
+    .post(
+        "/new-password",
+        createRateLimit(),
+        ...[newPasswordValidation, recoveryCodeValidation],
+        inputValidationResultMiddleware,
+        confirmPasswordHandler
     )
 
     .post(
