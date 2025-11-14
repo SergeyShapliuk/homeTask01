@@ -144,7 +144,7 @@ export const authService = {
 
         const confirmationCode = await passwordResetService.createResetCode(email);
 
-        console.log('confirmationCode',confirmationCode)
+        console.log("confirmationCode", confirmationCode);
 
         nodemailerService
             .sendEmail(
@@ -160,15 +160,18 @@ export const authService = {
     async confirmNewPasswordUser(
         newPassword: string,
         recoveryCode: string,
-        refreshToken: string
     ): Promise<boolean | null> {
-        const payload = await jwtService.decodeToken(refreshToken);
-console.log({payload})
-        if (!payload.userId) {
+        const email = await passwordResetService.getEmailByCode(recoveryCode);
+        if (!email) {
             return null;
         }
-        const user = await usersRepository.findById(payload.userId);
-        console.log({user})
+        const user = await usersRepository.findByLoginOrEmail(email);
+console.log({user})
+//         if (!payload.userId) {
+//             return null;
+//         }
+//         const user = await usersRepository.findById(payload.userId);
+        console.log({user});
         if (!user?._id) {
             return null;
         }

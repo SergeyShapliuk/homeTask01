@@ -60,7 +60,7 @@ export const recoveryEmailValidation = body("email")
     .trim()
     .notEmpty()
     .withMessage("Email is required")
-    .matches(RECOVERY_EMAIL_PATTERN)
+    .matches(EMAIL_PATTERN)
     .withMessage("Invalid email format")
     .isLength({max: 100})
     .withMessage("Email is too long");

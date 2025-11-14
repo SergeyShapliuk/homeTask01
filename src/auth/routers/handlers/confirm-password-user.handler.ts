@@ -10,14 +10,22 @@ export async function confirmPasswordHandler(
 ) {
     try {
         const {newPassword, recoveryCode} = req.body;
-        const refreshToken = req.cookies.refreshToken;
+        // const refreshToken = req.cookies.refreshToken;
+        const refreshToken = undefined;
 console.log({refreshToken})
 console.log({newPassword})
 console.log({recoveryCode})
-        const result = await authService.confirmNewPasswordUser(newPassword, recoveryCode, refreshToken);
+        const result = await authService.confirmNewPasswordUser(newPassword, recoveryCode);
 
         if (!result) {
-            return res.sendStatus(HttpStatus.BadRequest);
+            return res.status(HttpStatus.BadRequest).json({
+                errorsMessages: [
+                    {
+                        message: "Recovery code is required",
+                        field: "recoveryCode"
+                    }
+                ]
+            });
         }
         // const user = await usersRepository.findByConfirmationCode(recoveryCode);
         // console.log("confirmCodeHandlerUser", user);

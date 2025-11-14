@@ -10,7 +10,7 @@ interface ResetCode {
 class PasswordResetService {
     private resetCodes: Map<string, ResetCode> = new Map();
     private readonly CODE_EXPIRY = 5 * 60 * 1000; // 5 минут
-    private readonly MAX_ATTEMPTS = 5;
+    private readonly MAX_ATTEMPTS = 25;
 
     // Генерация и сохранение кода
     async createResetCode(email: string): Promise<string> {
@@ -28,6 +28,17 @@ class PasswordResetService {
         this.cleanupExpiredCodes();
 
         return confirmationCode;
+    }
+
+    async getEmailByCode(code: string): Promise<string | null> {
+        this.cleanupExpiredCodes();
+
+        for (const [email, resetCode] of this.resetCodes.entries()) {
+            if (resetCode.confirmationCode === code) {
+                return email;
+            }
+        }
+        return null;
     }
 
     // Проверка кода
