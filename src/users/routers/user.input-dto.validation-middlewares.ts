@@ -32,8 +32,8 @@ export const emailValidation = body("email")
     .withMessage("Email is required")
     .matches(EMAIL_PATTERN)
     .withMessage("Invalid email format")
-    .isLength({max: 100})
-    .withMessage("Email is too long");
+    // .isLength({max: 100})
+    // .withMessage("Email is too long");
 
 export const codeValidation = body("code")
     .isString()
