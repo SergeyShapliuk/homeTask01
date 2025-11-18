@@ -43,10 +43,10 @@ export const commentRepository = {
         return;
     },
 
-    async updateLikeStatus(  id: string,
-                             userId: string,
-                             newLikeStatus: string,
-                             currentLikeStatus: string): Promise<void> {
+    async updateLikeStatus(id: string,
+                           userId: string,
+                           newLikeStatus: string,
+                           currentLikeStatus: string): Promise<void> {
         // Если статус не изменился - ничего не делаем
         if (currentLikeStatus === newLikeStatus) {
             return;
@@ -57,9 +57,9 @@ export const commentRepository = {
 
         // Уменьшаем предыдущий счетчик
         if (currentLikeStatus === "Like") {
-            updateOperations.$inc = { "likesInfo.likesCount": -1 };
+            updateOperations.$inc = {"likesInfo.likesCount": -1};
         } else if (currentLikeStatus === "Dislike") {
-            updateOperations.$inc = { "likesInfo.dislikesCount": -1 };
+            updateOperations.$inc = {"likesInfo.dislikesCount": -1};
         }
 
         // Увеличиваем новый счетчик (только если не "None")
@@ -79,9 +79,7 @@ export const commentRepository = {
             {
                 _id: new ObjectId(id)
             },
-            {
-                $set: updateOperations
-            }
+            updateOperations
         );
 
         if (updateResult.matchedCount < 1) {
