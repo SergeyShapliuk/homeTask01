@@ -8,11 +8,12 @@ import {User} from "../users/domain/user";
 import {Comment} from "../coments/domain/comment";
 import {BlacklistedToken, ensureTTLIndex} from "../auth/routers/guard/refreshTokenBlacklistService";
 import {SessionDevice} from "../securityDevices/domain/sessionDevice";
+import * as mongoose from "mongoose";
 
 // const VIDEOS_COLLECTION_NAME = "videos";
 const BLOGS_COLLECTION_NAME = "blogs";
 const POSTS_COLLECTION_NAME = "posts";
-const COMMENTS_COLLECTION_NAME = "comments";
+export const COMMENTS_COLLECTION_NAME = "comments";
 const USERS_COLLECTION_NAME = "users";
 const TOKEN_BLACKLIST_COLLECTION = "tokenBlacklist";
 const DEVICES_COLLECTION_NAME = "devices";
@@ -48,8 +49,11 @@ export async function runDB(url: string): Promise<void> {
         await client.connect();
         await db.command({ping: 1});
         console.log("✅ Connected to the database");
+        await mongoose.connect(url);
+        console.log("✅ Connected to the mongoose");
     } catch (e) {
         await client.close();
+        await mongoose.disconnect();
         throw new Error(`❌ Database not connected: ${e}`);
     }
 }
@@ -58,8 +62,8 @@ export async function runDB(url: string): Promise<void> {
 async function ensureDevicesTTLIndex() {
     try {
         await devicesCollection.createIndex(
-            { "expiresAt": 1 },
-            { expireAfterSeconds: 0 } // удалять когда expiresAt прошло
+            {"expiresAt": 1},
+            {expireAfterSeconds: 0} // удалять когда expiresAt прошло
         );
         console.log("✅ Devices TTL index created");
     } catch (error) {

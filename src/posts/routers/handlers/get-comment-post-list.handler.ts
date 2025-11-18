@@ -32,6 +32,7 @@ export async function getCommentPostListHandler(
         );
         console.log("getCommentPostListHandler1", postId);
         console.log("getCommentPostListHandler2", queryInput);
+        console.log("getCommentPostListHandler3", items);
         const commentListOutput = mapToCommentListPaginatedOutput(items, {
             pageNumber: queryInput.pageNumber,
             pageSize: queryInput.pageSize,

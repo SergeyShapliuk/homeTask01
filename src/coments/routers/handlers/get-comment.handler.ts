@@ -12,6 +12,7 @@ export async function getCommentHandler(
     try {
         const id = req.params.id;
         const comment = await commentRepository.findByIdOrFail(id);
+        console.log({comment})
         const commentOutput = mapToCommentOutputUtil(comment);
         res.status(HttpStatus.Ok).send(commentOutput);
     } catch (e) {

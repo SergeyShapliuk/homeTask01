@@ -30,16 +30,14 @@ const contentValidation = body("content")
     .isLength({max: 1000})
     .withMessage("Length of name is not correct");
 
-const contentCommentsValidation = body("content")
+const likeStatusValidation = body("likeStatus")
     .isString()
-    .withMessage("content should be string")
+    .withMessage("likeStatus should be string")
     .trim()
     .notEmpty()
-    .withMessage("content is required")
-    .isLength({min: 20})
-    .withMessage("Length of name is not correct")
-    .isLength({max: 300})
-    .withMessage("Length of name is not correct");
+    .withMessage("likeStatus is required")
+    .isIn(["None", "Like", "Dislike"])
+    .withMessage("likeStatus should be one of: None, Like, Dislike");
 
 const blogIdValidation = body("blogId")
     .isString()
@@ -64,7 +62,11 @@ export const postCreatePostByBlogIdInputValidation = [
 ];
 
 export const postCreateContentByPostIdInputValidation = [
-    contentCommentsValidation
+  contentValidation
+];
+
+export const updateLikeStatusByPostIdInputValidation = [
+  likeStatusValidation
 ];
 
 export const postUpdateInputValidation = [

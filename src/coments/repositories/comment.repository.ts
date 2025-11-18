@@ -1,23 +1,18 @@
 import {ObjectId, WithId} from "mongodb";
 import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
-import {commentCollection, postCollection, userCollection} from "../../db/db";
-import {Comment} from "../domain/comment";
-import {PostAttributes} from "../../posts/application/dtos/post-attributes";
-import {CommentAttributes} from "../application/dtos/comment-attributes";
-import {PaginationAndSorting} from "../../core/types/pagination-and-sorting";
-import {BlogSortField} from "../../blogs/routers/input/blog-sort-field";
-import {Post} from "../../posts/domain/post";
-import {CommentSortField} from "../routers/input/comment-sort-field";
+import {Comment, CommentDocument, CommentModel} from "../domain/comment";
+
 
 export const commentRepository = {
 
 
     async findById(id: string): Promise<WithId<Comment> | null> {
-        return commentCollection.findOne({_id: new ObjectId(id)});
+        return CommentModel.findOne({_id: new ObjectId(id)});
     },
 
     async findByIdOrFail(id: string): Promise<WithId<Comment>> {
-        const res = await commentCollection.findOne({_id: new ObjectId(id)});
+        console.log({id});
+        const res = await this.findById(id);
 
         if (!res) {
             throw new RepositoryNotFoundError("Comment not exist");
@@ -26,13 +21,14 @@ export const commentRepository = {
     },
 
 
-    async create(newComment: Comment): Promise<string> {
-        const insertResult = await commentCollection.insertOne(newComment);
-        return insertResult.insertedId.toString();
+    async create(newComment: CommentDocument): Promise<string> {
+        const insertResult = await newComment.save();
+        console.log({insertResult});
+        return insertResult._id.toString();
     },
 
     async update(id: string, newComment: { content: string }): Promise<void> {
-        const updateResult = await commentCollection.updateOne(
+        const updateResult = await CommentModel.updateOne(
             {
                 _id: new ObjectId(id)
             },
@@ -47,9 +43,55 @@ export const commentRepository = {
         return;
     },
 
+    async updateLikeStatus(  id: string,
+                             userId: string,
+                             newLikeStatus: string,
+                             currentLikeStatus: string): Promise<void> {
+        // Если статус не изменился - ничего не делаем
+        if (currentLikeStatus === newLikeStatus) {
+            return;
+        }
+        const updateOperations: any = {
+            "likesInfo.myStatus": newLikeStatus
+        };
+
+        // Уменьшаем предыдущий счетчик
+        if (currentLikeStatus === "Like") {
+            updateOperations.$inc = { "likesInfo.likesCount": -1 };
+        } else if (currentLikeStatus === "Dislike") {
+            updateOperations.$inc = { "likesInfo.dislikesCount": -1 };
+        }
+
+        // Увеличиваем новый счетчик (только если не "None")
+        if (newLikeStatus === "Like") {
+            updateOperations.$inc = {
+                ...updateOperations.$inc,
+                "likesInfo.likesCount": 1
+            };
+        } else if (newLikeStatus === "Dislike") {
+            updateOperations.$inc = {
+                ...updateOperations.$inc,
+                "likesInfo.dislikesCount": 1
+            };
+        }
+
+        const updateResult = await CommentModel.updateOne(
+            {
+                _id: new ObjectId(id)
+            },
+            {
+                $set: updateOperations
+            }
+        );
+
+        if (updateResult.matchedCount < 1) {
+            throw new RepositoryNotFoundError("Comment not exist");
+        }
+        return;
+    },
 
     async delete(id: string): Promise<void> {
-        const deleteResult = await commentCollection.deleteOne({
+        const deleteResult = await CommentModel.deleteOne({
             _id: new ObjectId(id)
         });
 

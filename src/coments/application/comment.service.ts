@@ -3,7 +3,7 @@ import {commentRepository} from "../repositories/comment.repository";
 import {CommentQueryInput} from "../routers/input/comment-query.input";
 import {CommentAttributes} from "./dtos/comment-attributes";
 import {bcryptService} from "../../core/adapters/bcrypt.service";
-import {Comment} from "../domain/comment";
+import {Comment, CommentModel} from "../domain/comment";
 import {PostAttributes} from "../../posts/application/dtos/post-attributes";
 import {postsRepository} from "../../posts/repositories/posts.repository";
 import {PaginationAndSorting} from "../../core/types/pagination-and-sorting";
@@ -36,10 +36,10 @@ export const commentService = {
 
 
     async create(dto: CommentAttributes): Promise<string> {
-        const {content} = dto;
         const post = await postsRepository.findByIdOrFail(dto.postId);
         const user = await usersRepository.findById(dto.userId);
-
+        console.log({post});
+        console.log({user});
         if (!user) {
             throw new RepositoryNotFoundError(
                 `User has not exist`
@@ -50,17 +50,18 @@ export const commentService = {
                 `Post has not exist`
             );
         }
-
-
-        const newComment: Comment = {
-            content,
-            commentatorInfo: {
+        const commentData = {
+            content: dto.content,
+            commentatorInfo: {  // только это поле обязательно
                 userId: dto.userId,
                 userLogin: user.login
             },
-            createdAt: new Date().toISOString(),
             postId: dto.postId
+            // likesInfo и createdAt создадутся автоматически
         };
+        const newComment = new CommentModel(commentData);
+
+        console.log({newComment});
 
         return await commentRepository.create(newComment);
     },
@@ -73,6 +74,18 @@ export const commentService = {
 
     async update(id: string, dto: { content: string }): Promise<void> {
         await commentRepository.update(id, dto);
+        return;
+    },
+
+    async updateLikeStatus(commentId: string,
+                           userId: string,
+                           newLikeStatus: string,
+                           currentLikeStatus: string): Promise<void> {
+        console.log({commentId, userId, newLikeStatus, currentLikeStatus});
+        await commentRepository.updateLikeStatus(commentId,
+            userId,
+            newLikeStatus,
+            currentLikeStatus);
         return;
     }
 

@@ -11,7 +11,7 @@ interface RefreshTokenPayload {
 export const jwtService = {
     async createToken(userId: string): Promise<string> {
         return jwt.sign({userId}, "createToken-for-me", {
-            expiresIn: 10
+            expiresIn: 600
         });
     },
     async createRefreshToken(userId: string, deviceId?: string): Promise<string> {
@@ -21,7 +21,7 @@ export const jwtService = {
             iat: Math.floor(Date.now() / 1000)
         };
         return jwt.sign(payload, "createToken-for-me", {
-            expiresIn: 20
+            expiresIn: 1200
         });
     },
     async decodeToken(token: string): Promise<any> {

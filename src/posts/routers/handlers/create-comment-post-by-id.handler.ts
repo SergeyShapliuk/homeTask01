@@ -16,14 +16,17 @@ export async function createCommentPostByIdHandler(
         const userId = req.user?.id;
         const {content} = req.body;
         if (!userId) return res.sendStatus(HttpStatus.Unauthorized);
-
+console.log({postId})
+console.log({userId})
+console.log({content})
         const createdCommentId = await commentService.create({
             content,
             postId,
             userId
         });
-
+        console.log({createdCommentId})
         const createdComment = await commentService.findByIdOrFail(createdCommentId);
+        console.log({createdComment})
         const commentOutput = mapToCommentOutputUtil(createdComment);
 
         res.status(HttpStatus.Created).send(commentOutput);

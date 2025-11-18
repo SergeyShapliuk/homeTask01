@@ -10,6 +10,11 @@ export function mapToCommentOutputUtil(comment: WithId<Comment>): CommentOutput 
             userId: comment.commentatorInfo.userId,
             userLogin: comment.commentatorInfo.userLogin
         },
-        createdAt: comment.createdAt
+        createdAt: comment.createdAt,
+        likesInfo:{
+            likesCount:comment.likesInfo.likesCount,
+            dislikesCount:comment.likesInfo.dislikesCount,
+            myStatus:comment.likesInfo.myStatus
+        }
     };
 }

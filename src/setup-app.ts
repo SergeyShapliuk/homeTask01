@@ -17,15 +17,16 @@ import {authRouter} from "./auth/routers/auth.router";
 import {commentsRouter} from "./coments/routers/comments.router";
 import {securityRouter} from "./securityDevices/routers/security.router";
 import cookieParser from "cookie-parser";
-import session from "express-session";
+import cors from 'cors';
 
 
 export const setupApp = (app: Express) => {
-
+    app.use(cookieParser());
     app.set("trust proxy", true);
 
+    app.use(cors());
     app.use(express.json()); // middleware для парсинга JSON в теле запроса
-    app.use(cookieParser());
+
 
 
     app.use(VIDEOS_PATH, videoRouter); // Подключаем роутеры
