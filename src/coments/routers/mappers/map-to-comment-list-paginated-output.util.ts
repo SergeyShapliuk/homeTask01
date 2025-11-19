@@ -23,7 +23,7 @@ export function mapToCommentListPaginatedOutput(
             likesInfo:{
                 likesCount: comment.likesInfo.likesCount,
                 dislikesCount: comment.likesInfo.dislikesCount,
-                myStatus: comment.likesInfo.myStatus,
+                myStatus: 'None',
 
             }
         }))

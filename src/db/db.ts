@@ -9,23 +9,26 @@ import {Comment} from "../coments/domain/comment";
 import {BlacklistedToken, ensureTTLIndex} from "../auth/routers/guard/refreshTokenBlacklistService";
 import {SessionDevice} from "../securityDevices/domain/sessionDevice";
 import * as mongoose from "mongoose";
+import {CommentLike} from "../coments/domain/comment-like.model";
 
 // const VIDEOS_COLLECTION_NAME = "videos";
 const BLOGS_COLLECTION_NAME = "blogs";
 const POSTS_COLLECTION_NAME = "posts";
-export const COMMENTS_COLLECTION_NAME = "comments";
 const USERS_COLLECTION_NAME = "users";
 const TOKEN_BLACKLIST_COLLECTION = "tokenBlacklist";
 const DEVICES_COLLECTION_NAME = "devices";
+export const COMMENTS_COLLECTION_NAME = "comments";
+export const COMMENT_LIKE_COLLECTION_NAME = "commentLike";
 
 export let client: MongoClient;
 // export let videoCollection: Collection<Video>;
 export let blogCollection: Collection<Blog>;
 export let postCollection: Collection<Post>;
-export let commentCollection: Collection<Comment>;
 export let userCollection: Collection<User>;
 export let tokenBlacklistCollection: Collection<BlacklistedToken>;
 export let devicesCollection: Collection<SessionDevice>;
+export let commentCollection: Collection<Comment>;
+export let commentLikeCollection: Collection<CommentLike>;
 
 
 // Подключения к бд
@@ -37,11 +40,11 @@ export async function runDB(url: string): Promise<void> {
     // videoCollection = db.collection<Video>(VIDEOS_COLLECTION_NAME);
     blogCollection = db.collection<Blog>(BLOGS_COLLECTION_NAME);
     postCollection = db.collection<Post>(POSTS_COLLECTION_NAME);
-    commentCollection = db.collection<Comment>(COMMENTS_COLLECTION_NAME);
     userCollection = db.collection<User>(USERS_COLLECTION_NAME);
     tokenBlacklistCollection = db.collection<BlacklistedToken>(TOKEN_BLACKLIST_COLLECTION);
     devicesCollection = db.collection<SessionDevice>(DEVICES_COLLECTION_NAME);
-
+    commentCollection = db.collection<Comment>(COMMENTS_COLLECTION_NAME);
+    commentLikeCollection = db.collection<CommentLike>(COMMENT_LIKE_COLLECTION_NAME);
     // await ensureTTLIndex();
     // await ensureDevicesTTLIndex();
 

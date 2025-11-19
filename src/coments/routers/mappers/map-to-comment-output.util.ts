@@ -1,20 +1,22 @@
-import {WithId} from "mongodb";
 import {CommentOutput} from "../output/comment.output";
+import {commentLikeRepository} from "../../repositories/comment.like.repository";
 import {Comment} from "../../domain/comment";
 
-export function mapToCommentOutputUtil(comment: WithId<Comment>): CommentOutput {
+export async function mapToCommentOutputUtil(comment: any, userId?: string): Promise<CommentOutput> {
+    // Получаем статус текущего пользователя
+    const myStatus = await commentLikeRepository.getUserLikeStatus(
+        comment?._id.toString() || "",
+        userId
+    );
     return {
-        id: comment._id.toString(),
+        id: comment?._id.toString() || "",
         content: comment.content,
-        commentatorInfo: {
-            userId: comment.commentatorInfo.userId,
-            userLogin: comment.commentatorInfo.userLogin
-        },
+        commentatorInfo: comment.commentatorInfo,
         createdAt: comment.createdAt,
-        likesInfo:{
-            likesCount:comment.likesInfo.likesCount,
-            dislikesCount:comment.likesInfo.dislikesCount,
-            myStatus:comment.likesInfo.myStatus
+        likesInfo: {
+            likesCount: comment.likesInfo?.likesCount || 0,
+            dislikesCount: comment.likesInfo?.dislikesCount || 0,
+            myStatus: myStatus
         }
     };
 }

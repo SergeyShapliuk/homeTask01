@@ -6,6 +6,7 @@ import {CommentUpdateInput} from "../input/comment-update.input";
 import {RequestWithParamsAndBodyAndUserId} from "../../../core/types/requests";
 import {IdType} from "../../../core/types/id";
 import {commentRepository} from "../../repositories/comment.repository";
+import {commentLikeService} from "../../application/comment.like.service";
 
 
 export async function updateLikeStatusHandler(
@@ -16,15 +17,20 @@ export async function updateLikeStatusHandler(
         const commentId = req.params.commentId;
         const userId = req.user?.id;
         const likeStatus = req.body.likeStatus;
-        console.log('updateLikeStatusHandler',{userId});
-        console.log('updateLikeStatusHandler',{commentId});
-        const comment = await commentRepository.findByIdOrFail(commentId);
-        if (comment.commentatorInfo.userId !== userId) {
-            res.status(HttpStatus.Forbidden).send("If try delete the comment that is not your own");
+        console.log("updateLikeStatusHandler", {userId});
+        console.log("updateLikeStatusHandler", {commentId});
+        // const comment = await commentRepository.findByIdOrFail(commentId);
+        // if (comment.commentatorInfo.userId !== userId) {
+        //     res.status(HttpStatus.Forbidden).send("If try delete the comment that is not your own");
+        //     return;
+        // }
+        if (!userId) {
+            res.sendStatus(HttpStatus.Unauthorized);
             return;
         }
+
         console.log("updateCommentHandler", commentId);
-        await commentService.updateLikeStatus(commentId, userId, likeStatus, comment.likesInfo.myStatus);
+        await commentLikeService.updateLikeStatus(commentId, userId, likeStatus);
         res.sendStatus(HttpStatus.NoContent);
     } catch (e) {
         errorsHandler(e, res);

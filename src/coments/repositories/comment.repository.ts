@@ -43,51 +43,6 @@ export const commentRepository = {
         return;
     },
 
-    async updateLikeStatus(id: string,
-                           userId: string,
-                           newLikeStatus: string,
-                           currentLikeStatus: string): Promise<void> {
-        // Если статус не изменился - ничего не делаем
-        if (currentLikeStatus === newLikeStatus) {
-            return;
-        }
-        const updateOperations: any = {
-            "likesInfo.myStatus": newLikeStatus
-        };
-
-        // Уменьшаем предыдущий счетчик
-        if (currentLikeStatus === "Like") {
-            updateOperations.$inc = {"likesInfo.likesCount": -1};
-        } else if (currentLikeStatus === "Dislike") {
-            updateOperations.$inc = {"likesInfo.dislikesCount": -1};
-        }
-
-        // Увеличиваем новый счетчик (только если не "None")
-        if (newLikeStatus === "Like") {
-            updateOperations.$inc = {
-                ...updateOperations.$inc,
-                "likesInfo.likesCount": 1
-            };
-        } else if (newLikeStatus === "Dislike") {
-            updateOperations.$inc = {
-                ...updateOperations.$inc,
-                "likesInfo.dislikesCount": 1
-            };
-        }
-
-        const updateResult = await CommentModel.updateOne(
-            {
-                _id: new ObjectId(id)
-            },
-            updateOperations
-        );
-
-        if (updateResult.matchedCount < 1) {
-            throw new RepositoryNotFoundError("Comment not exist");
-        }
-        return;
-    },
-
     async delete(id: string): Promise<void> {
         const deleteResult = await CommentModel.deleteOne({
             _id: new ObjectId(id)

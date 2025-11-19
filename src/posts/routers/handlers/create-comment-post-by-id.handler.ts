@@ -8,7 +8,7 @@ import {RequestWithParamsAndBodyAndUserId} from "../../../core/types/requests";
 import {IdType} from "../../../core/types/id";
 
 export async function createCommentPostByIdHandler(
-    req: RequestWithParamsAndBodyAndUserId<{ postId: string }, CommentCreateInput,IdType>,
+    req: RequestWithParamsAndBodyAndUserId<{ postId: string }, CommentCreateInput, IdType>,
     res: Response
 ) {
     try {
@@ -16,19 +16,19 @@ export async function createCommentPostByIdHandler(
         const userId = req.user?.id;
         const {content} = req.body;
         if (!userId) return res.sendStatus(HttpStatus.Unauthorized);
-console.log({postId})
-console.log({userId})
-console.log({content})
+        console.log({postId});
+        console.log({userId});
+        console.log({content});
         const createdCommentId = await commentService.create({
             content,
             postId,
             userId
         });
-        console.log({createdCommentId})
+        console.log({createdCommentId});
         const createdComment = await commentService.findByIdOrFail(createdCommentId);
-        console.log({createdComment})
-        const commentOutput = mapToCommentOutputUtil(createdComment);
-
+        console.log({createdComment});
+        const commentOutput =await mapToCommentOutputUtil(createdComment, userId);
+        console.log({commentOutput});
         res.status(HttpStatus.Created).send(commentOutput);
     } catch (e: unknown) {
         errorsHandler(e, res);

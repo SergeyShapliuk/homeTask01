@@ -11,7 +11,7 @@ export type Comment = {
     likesInfo: {
         likesCount: number,
         dislikesCount: number,
-        myStatus: string
+        // myStatus: string
     },
     postId?: string;
 };
@@ -32,18 +32,21 @@ const commentatorInfoSchema = new mongoose.Schema<{
 const likesInfoSchema = new mongoose.Schema<{
     likesCount: number;
     dislikesCount: number;
-    myStatus: string;
+    // myStatus: string;
 }>({
     likesCount: {type: Number, default: 0},
     dislikesCount: {type: Number, default: 0},
-    myStatus: {type: String, default: "None"}
+    // myStatus: {type: String, default: "None"}
 
 });
 
 const commentSchema = new mongoose.Schema<Comment>({
     content: String,
-    commentatorInfo: {type: commentatorInfoSchema, default: {}},
-    likesInfo: {type: likesInfoSchema, default: {}},
+    commentatorInfo: {type: commentatorInfoSchema, required: true},
+    likesInfo: {
+        type: likesInfoSchema,
+        default: () => ({ likesCount: 0, dislikesCount: 0 })
+    },
     createdAt: {type: String, default: () => new Date().toISOString()},
     postId: String
 });

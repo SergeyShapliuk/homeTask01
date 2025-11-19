@@ -2,19 +2,10 @@ import {WithId} from "mongodb";
 import {commentRepository} from "../repositories/comment.repository";
 import {CommentQueryInput} from "../routers/input/comment-query.input";
 import {CommentAttributes} from "./dtos/comment-attributes";
-import {bcryptService} from "../../core/adapters/bcrypt.service";
 import {Comment, CommentModel} from "../domain/comment";
-import {PostAttributes} from "../../posts/application/dtos/post-attributes";
 import {postsRepository} from "../../posts/repositories/posts.repository";
-import {PaginationAndSorting} from "../../core/types/pagination-and-sorting";
-import {BlogSortField} from "../../blogs/routers/input/blog-sort-field";
-import {Post} from "../../posts/domain/post";
-import {blogsRepository} from "../../blogs/repositories/blogs.repository";
-import {PostSortField} from "../../posts/routers/input/post-sort-field";
-import {CommentSortField} from "../routers/input/comment-sort-field";
 import {RepositoryNotFoundError} from "../../core/errors/repository-not-found.error";
 import {usersRepository} from "../../users/repositories/users.repository";
-import {usersQwRepository} from "../../users/repositories/users.query.repository";
 import {commentsQwRepository} from "../repositories/comments.query.repository";
 import {User} from "../../users/domain/user";
 
@@ -77,17 +68,16 @@ export const commentService = {
         return;
     },
 
-    async updateLikeStatus(commentId: string,
-                           userId: string,
-                           newLikeStatus: string,
-                           currentLikeStatus: string): Promise<void> {
-        console.log({commentId, userId, newLikeStatus, currentLikeStatus});
-        await commentRepository.updateLikeStatus(commentId,
-            userId,
-            newLikeStatus,
-            currentLikeStatus);
-        return;
-    }
+    // async updateLikeStatus(commentId: string,
+    //                        userId: string,
+    //                        likeStatus: string): Promise<void> {
+    //     // console.log({commentId, newLikeStatus, currentLikeStatus});
+    //     await commentRepository.updateLikeStatus(
+    //         commentId,
+    //         newLikeStatus,
+    //         currentLikeStatus);
+    //     return;
+    // }
 
 
 };
