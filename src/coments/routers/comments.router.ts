@@ -13,6 +13,7 @@ import {
     updateLikeStatusByPostIdInputValidation
 } from "../../posts/routers/post.input-dto.validation-middlewares";
 import {updateLikeStatusHandler} from "./handlers/update-like-status.handler";
+import {optionalAccessTokenGuard} from "../../auth/routers/guard/optional.access.token.guard";
 
 export const commentsRouter = Router({});
 
@@ -21,7 +22,7 @@ export const commentsRouter = Router({});
 commentsRouter
     .get(
         "/:id",
-        accessTokenGuard,
+        optionalAccessTokenGuard,
         idValidation,
         inputValidationResultMiddleware,
         getCommentHandler
