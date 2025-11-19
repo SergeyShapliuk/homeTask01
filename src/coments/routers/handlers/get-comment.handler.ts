@@ -13,7 +13,7 @@ export async function getCommentHandler(
         const id = req.params.id;
         const userId = req.user?.id;
         const comment = await commentRepository.findByIdOrFail(id);
-        console.log({comment});
+        console.log({userId});
         const commentOutput =await mapToCommentOutputUtil(comment, userId);
         res.status(HttpStatus.Ok).send(commentOutput);
     } catch (e) {
