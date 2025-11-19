@@ -19,16 +19,16 @@ export async function updateLikeStatusHandler(
         const likeStatus = req.body.likeStatus;
         console.log("updateLikeStatusHandler", {userId});
         console.log("updateLikeStatusHandler", {commentId});
-        // const comment = await commentRepository.findByIdOrFail(commentId);
-        // if (comment.commentatorInfo.userId !== userId) {
-        //     res.status(HttpStatus.Forbidden).send("If try delete the comment that is not your own");
-        //     return;
-        // }
         if (!userId) {
             res.sendStatus(HttpStatus.Unauthorized);
             return;
         }
-
+        const comment = await commentRepository.findByIdOrFail(commentId);
+        if (comment.commentatorInfo.userId !== userId) {
+            res.status(HttpStatus.Forbidden).send("If try delete the comment that is not your own");
+            return;
+        }
+        
         console.log("updateCommentHandler", commentId);
         await commentLikeService.updateLikeStatus(commentId, userId, likeStatus);
         res.sendStatus(HttpStatus.NoContent);
