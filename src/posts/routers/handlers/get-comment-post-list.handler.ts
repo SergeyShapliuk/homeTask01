@@ -13,13 +13,14 @@ import {CommentQueryInput} from "../../../coments/routers/input/comment-query.in
 //   const blogs = blogsRepository.findAll();
 //   res.status(HttpStatus.Ok).send(blogs);
 // }
+
 export async function getCommentPostListHandler(
     req: Request<{ postId: string }, {}, {}, PostQueryInput>,
     res: Response
 ) {
     try {
         const postId = req.params.postId;
-
+        const userId = req.user?.id;
         const sanitizedQuery = matchedData<CommentQueryInput>(req, {
             locations: ["query"],
             includeOptionals: true
@@ -28,16 +29,18 @@ export async function getCommentPostListHandler(
         const queryInput = setDefaultSortAndPaginationIfNotExist(sanitizedQuery);
         const {items, totalCount} = await postsService.findCommentsByPost(
             queryInput,
-            postId
+            postId,
+            userId
         );
         console.log("getCommentPostListHandler1", postId);
         console.log("getCommentPostListHandler2", queryInput);
         console.log("getCommentPostListHandler3", items);
-        const commentListOutput = mapToCommentListPaginatedOutput(items, {
+        const commentListOutput =await mapToCommentListPaginatedOutput(items, {
             pageNumber: queryInput.pageNumber,
             pageSize: queryInput.pageSize,
             totalCount
-        });
+        }, userId);
+        console.log("commentListOutput", commentListOutput);
         res.status(HttpStatus.Ok).send(commentListOutput);
     } catch (e) {
         errorsHandler(e, res);

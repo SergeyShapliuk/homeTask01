@@ -11,7 +11,8 @@ export const optionalAccessTokenGuard = async (req: Request, res: Response, next
     }
 
     const [authType, token] = req.headers.authorization.split(' ');
-
+console.log({authType})
+console.log({token})
     if (authType !== 'Bearer') {
         // Если не Bearer токен - продолжаем без пользователя
         req.user = undefined;
@@ -20,6 +21,7 @@ export const optionalAccessTokenGuard = async (req: Request, res: Response, next
 
     try {
         const payload = await jwtService.verifyToken(token);
+        console.log({payload})
         if (payload && payload.userId) {
             req.user = { id: payload.userId } as IdType;
         } else {
