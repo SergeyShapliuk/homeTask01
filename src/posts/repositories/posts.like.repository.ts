@@ -18,59 +18,57 @@ export const postLikeRepository = {
         return res;
     },
 
-    async updateLikeStatus(
-        postId: string,
-        userId: string,
-        login: string,
-        likeStatus: "Like" | "Dislike" | "None"
-    ): Promise<void> {
-        const currentLike = await this.findLikeById(userId, postId);
+    async updateLikeStatus(postId: string, userId: string, login: string, likeStatus: "Like" | "Dislike" | "None") {
+        const current = await PostLikeModel.findOne({userId, postId});
 
-        if (currentLike?.status === likeStatus) {
+        // Если лайк уже стоит — ничего не менять
+        if (current && likeStatus === "Like") {
             return;
         }
 
-        try {
-            // Удаляем предыдущий лайк если был
-            if (currentLike) {
-                await PostLikeModel.deleteOne({userId, postId});
+        // Если был лайк — удаляем его
+        if (current) {
+            await PostLikeModel.deleteOne({userId, postId});
 
-                // Уменьшаем предыдущий счетчик
-                const previousField = currentLike.status === "Like"
-                    ? {"extendedLikesInfo.likesCount": -1}
-                    : {"extendedLikesInfo.dislikesCount": -1};
+            await PostModel.updateOne(
+                {_id: postId},
+                {$inc: {"extendedLikesInfo.likesCount": -1}}
+            );
+        }
 
-                await PostModel.updateOne(
-                    {_id: new mongoose.Types.ObjectId(postId)},
-                    {$inc: previousField}
-                );
-            }
+        // Если новый статус = "Like"
+        if (likeStatus === "Like") {
+            await PostLikeModel.create({
+                userId,
+                postId,
+                login,
+                createdAt: new Date().toISOString()
+            });
 
-            // Добавляем новый лайк если не "None"
-            if (likeStatus !== "None") {
-                await PostLikeModel.create({
-                    userId,
-                    postId,
-                    login,
-                    status: likeStatus,
-                    createdAt: new Date().toISOString()
-                });
+            await PostModel.updateOne(
+                {_id: postId},
+                {$inc: {"extendedLikesInfo.likesCount": 1}}
+            );
+        }
 
-                // Увеличиваем новый счетчик
-                const newField = likeStatus === "Like"
-                    ? {"extendedLikesInfo.likesCount": 1}
-                    : {"extendedLikesInfo.dislikesCount": 1};
+        // Если новый статус = "Dislike"
+        if (likeStatus === "Dislike") {
+            await PostModel.updateOne(
+                {_id: postId},
+                {$inc: {"extendedLikesInfo.dislikesCount": 1}}
+            );
+        }
 
-                await PostModel.updateOne(
-                    {_id: new mongoose.Types.ObjectId(postId)},
-                    {$inc: newField}
-                );
-            }
-        } catch (error) {
-            console.error("Error updating like status:", error);
-            throw error;
+        // Если новый статус = None
+        if (likeStatus === "None" && current === null) {
+            // Был dislike
+            await PostModel.updateOne(
+                {_id: postId},
+                {$inc: {"extendedLikesInfo.dislikesCount": -1}}
+            );
         }
     },
+
 
     async getUserPostLikeStatus(postId: string, userId?: string): Promise<"Like" | "Dislike" | "None"> {
         if (!userId) return "None";
@@ -85,10 +83,10 @@ export const postLikeRepository = {
         login: string
     }[]> {
         if (!postId) return [];
-        const likes = await PostLikeModel.find({postId})
+        const likes = await PostLikeModel.find({postId, status: "Like"})
             .sort({createdAt: -1}) // или addedAt, в зависимости от вашей модели
             .limit(3)
-            .select("userId login createdAt") // выбираем нужные поля
+            .select({ userId: 1, login: 1, createdAt: 1, _id: 0 })// выбираем нужные поля
             // .populate("userId", "login") // если login хранится в User модели
             .lean();
         console.log("getPostNewestLikes", likes);
