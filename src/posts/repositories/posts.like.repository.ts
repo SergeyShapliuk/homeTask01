@@ -90,7 +90,7 @@ export const postLikeRepository = {
             .limit(3)
             .select("userId login createdAt") // выбираем нужные поля
             // .populate("userId", "login") // если login хранится в User модели
-            .exec();
+            .lean();
         console.log("getPostNewestLikes", likes);
         return likes.map(like => ({
             addedAt: like.createdAt, // или like.addedAt

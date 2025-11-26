@@ -20,10 +20,10 @@ export async function mapToPostListPaginatedOutput(
             const newestLikes = await postLikeRepository.getPostNewestLikes(
                 post._id.toString()
             );
-            let filteredNewestLikes = newestLikes;
-            if (myStatus === "Dislike") {
-                filteredNewestLikes = [];
-            }
+            // let filteredNewestLikes = newestLikes;
+            // if (myStatus === "Dislike") {
+            //     filteredNewestLikes = [];
+            // }
 
             return {
                 id: post._id.toString(),
@@ -37,7 +37,7 @@ export async function mapToPostListPaginatedOutput(
                     likesCount: post.extendedLikesInfo.likesCount,
                     dislikesCount: post.extendedLikesInfo.dislikesCount,
                     myStatus,
-                    newestLikes: filteredNewestLikes
+                    newestLikes
                 }
             };
         })
