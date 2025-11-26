@@ -24,14 +24,15 @@ export async function getPostHandler(
 ) {
   try {
     const id = req.params.id;
-
+    const userId = req.user?.id;
     // Поиск блога по ID
     const post = await postsRepository.findByIdOrFail(id);
     // if (!post) {
     //     res.status(HttpStatus.NotFound).send("Not Found");
     //     return;
     // }
-    const postOutput = mapToPostOutputUtil(post);
+    console.log({post})
+    const postOutput =await mapToPostOutputUtil(post,userId);
 
     res.status(HttpStatus.Ok).send(postOutput);
   } catch (e) {

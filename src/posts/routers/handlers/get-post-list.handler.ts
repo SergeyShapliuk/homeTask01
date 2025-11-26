@@ -17,6 +17,7 @@ export async function getPostListHandler(
     res: Response
 ) {
     try {
+        const userId = req.user?.id;
         const sanitizedQuery = matchedData<PostQueryInput>(req, {
             locations: ["query"],
             includeOptionals: true
@@ -26,12 +27,14 @@ export async function getPostListHandler(
         console.log("getPostListHandler2", sanitizedQuery);
         console.log("getPostListHandler2.5", req.query);
         const {items, totalCount} = await postsService.findMany(queryInput);
-        console.log("getPostListHandler3", {items, totalCount});
-        const postListOutput = mapToPostListPaginatedOutput(items, {
+        console.log("getPostListHandler3", JSON.stringify(items), {items, totalCount});
+        const postListOutput = await mapToPostListPaginatedOutput(items, {
             pageNumber: queryInput.pageNumber,
             pageSize: queryInput.pageSize,
             totalCount
-        });
+        }, userId);
+        console.log("getPostListHandlerOutput", postListOutput);
+
         // const blogs = await postsRepository.findAll();
         // const postViewModels = blogs.map(mapToPostViewModel);
         res.status(HttpStatus.Ok).send(postListOutput);

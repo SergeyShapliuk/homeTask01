@@ -1,8 +1,9 @@
 import request from 'supertest';
 import { VideoInputDto } from '../src/videos/dto/video.input-dto';
-import { db } from '../src/db/db';
+
 import { setupApp } from '../src/setup-app';
 import express from 'express';
+import {dbVideo} from "../src/db/db";
 
 describe('/VIDEOS', () => {
   const app = express();
@@ -129,7 +130,7 @@ describe('/VIDEOS', () => {
   it('+ GET videos by ID with correct id', async () => {
     const response = await request
       .agent(app)
-      .get('/videos/' + db.videos[db.videos.length - 1].id)
+      .get('/videos/' + dbVideo.videos[dbVideo.videos.length - 1].id)
       .send(testVideosData)
       .expect(200);
 
@@ -177,7 +178,7 @@ describe('/VIDEOS', () => {
   it('DELETE driver by ID with correct id', async () => {
     await request
       .agent(app)
-      .delete('/videos/' + db.videos[db.videos.length - 1].id)
+      .delete('/videos/' + dbVideo.videos[dbVideo.videos.length - 1].id)
       .expect(204);
   });
 });
