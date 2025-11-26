@@ -24,6 +24,7 @@ import {createBlogPostByIdHandler} from "./handlers/create-blog-post-by-id.handl
 import {
     postCreatePostByBlogIdInputValidation
 } from "../../posts/routers/post.input-dto.validation-middlewares";
+import {optionalAccessTokenGuard} from "../../auth/routers/guard/optional.access.token.guard";
 
 export const blogsRouter = Router({});
 
@@ -40,7 +41,7 @@ blogsRouter
     .post(
         "",
         superAdminGuardMiddleware,
-        blogCreateInputValidation,
+        ...blogCreateInputValidation,
         inputValidationResultMiddleware,
         createBlogHandler
     )
@@ -51,7 +52,7 @@ blogsRouter
         "/:id",
         superAdminGuardMiddleware,
         idValidation,
-        blogUpdateInputValidation,
+        ...blogUpdateInputValidation,
         inputValidationResultMiddleware,
         updateBlogHandler
     )
@@ -66,17 +67,18 @@ blogsRouter
 
     .post(
         "/:blogId/posts",
-        superAdminGuardMiddleware,
+        optionalAccessTokenGuard,
         blogIdValidation,
-        postCreatePostByBlogIdInputValidation,
+        ...postCreatePostByBlogIdInputValidation,
         inputValidationResultMiddleware,
-        createBlogPostByIdHandler
+        createBlogPostByIdHandler as any
     )
 
     .get(
         "/:blogId/posts",
+        optionalAccessTokenGuard,
         blogIdValidation,
-        paginationAndSortingValidation(BlogSortField),
+        ...paginationAndSortingValidation(BlogSortField),
         inputValidationResultMiddleware,
-        getBlogPostListHandler
+        getBlogPostListHandler as any
     );

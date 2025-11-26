@@ -18,7 +18,7 @@ export async function getBlogPostListHandler(
 ) {
     try {
         const blogId = req.params.blogId;
-        // const queryInput = req.query;
+        const userId = req.user?.id;
 
         const sanitizedQuery = matchedData<BlogQueryInput>(req, {
             locations: ["query"],
@@ -36,7 +36,7 @@ export async function getBlogPostListHandler(
             pageNumber: queryInput.pageNumber,
             pageSize: queryInput.pageSize,
             totalCount
-        });
+        }, userId);
         res.status(HttpStatus.Ok).send(blogListOutput);
     } catch (e) {
         errorsHandler(e, res);
