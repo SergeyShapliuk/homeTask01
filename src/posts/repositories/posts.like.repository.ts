@@ -44,27 +44,17 @@ export const postLikeRepository = {
                     {_id: new mongoose.Types.ObjectId(postId)},
                     {$inc: previousField}
                 );
-
-                // УДАЛЯЕМ из newestLikes если был лайк
-                if (currentLike.status === "Like") {
-                    await PostModel.updateOne(
-                        {_id: new mongoose.Types.ObjectId(postId)},
-                        {$pull: {"extendedLikesInfo.newestLikes": {userId}}}
-                    );
-                }
             }
 
             // Добавляем новый лайк если не "None"
             if (likeStatus !== "None") {
-                const newLike = {
+                await PostLikeModel.create({
                     userId,
                     postId,
                     login,
                     status: likeStatus,
                     createdAt: new Date().toISOString()
-                };
-
-                await PostLikeModel.create(newLike);
+                });
 
                 // Увеличиваем новый счетчик
                 const newField = likeStatus === "Like"
@@ -75,28 +65,6 @@ export const postLikeRepository = {
                     {_id: new mongoose.Types.ObjectId(postId)},
                     {$inc: newField}
                 );
-
-                // ДОБАВЛЯЕМ в newestLikes если это лайк
-                if (likeStatus === "Like") {
-                    const newestLikeInfo = {
-                        addedAt: newLike.createdAt,
-                        userId: newLike.userId,
-                        login: newLike.login
-                    };
-
-                    await PostModel.updateOne(
-                        {_id: new mongoose.Types.ObjectId(postId)},
-                        {
-                            $push: {
-                                "extendedLikesInfo.newestLikes": {
-                                    $each: [newestLikeInfo],
-                                    $sort: {addedAt: -1},
-                                    $slice: 3 // сохраняем только 3 последних
-                                }
-                            }
-                        }
-                    );
-                }
             }
         } catch (error) {
             console.error("Error updating like status:", error);

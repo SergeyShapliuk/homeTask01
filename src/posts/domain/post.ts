@@ -11,11 +11,11 @@ export type Post = {
     extendedLikesInfo: {
         likesCount: number;
         dislikesCount: number;
-        newestLikes: Array<{
-            addedAt: string;
-            userId: string;
-            login: string;
-        }>;
+        // newestLikes: Array<{
+        //     addedAt: string;
+        //     userId: string;
+        //     login: string;
+        // }>;
     };
 };
 
@@ -39,15 +39,15 @@ const newestLikesSchema = new mongoose.Schema<{
 const extendedLikesInfoSchema = new mongoose.Schema<{
     likesCount: number;
     dislikesCount: number;
-    newestLikes: Array<{
-        addedAt: string;
-        userId: string;
-        login: string;
-    }>;
+    // newestLikes: Array<{
+    //     addedAt: string;
+    //     userId: string;
+    //     login: string;
+    // }>;
 }>({
     likesCount: {type: Number, default: 0},
     dislikesCount: {type: Number, default: 0},
-    newestLikes: [newestLikesSchema] // ✅ Добавлен newestLikes
+    // newestLikes: [newestLikesSchema] // ✅ Добавлен newestLikes
 }, {
     _id: false
 });
@@ -64,7 +64,7 @@ const PostSchema = new mongoose.Schema<Post>({
         default: () => ({
             likesCount: 0,
             dislikesCount: 0,
-            newestLikes: []
+            // newestLikes: []
         })
     },
     createdAt: {type: String, default: () => new Date().toISOString()}
