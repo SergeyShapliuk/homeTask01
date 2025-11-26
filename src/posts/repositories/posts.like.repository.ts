@@ -30,7 +30,6 @@ export const postLikeRepository = {
             return;
         }
 
-        // УБИРАЕМ транзакции - выполняем операции последовательно
         try {
             // Удаляем предыдущий лайк если был
             if (currentLike) {
@@ -45,17 +44,27 @@ export const postLikeRepository = {
                     {_id: new mongoose.Types.ObjectId(postId)},
                     {$inc: previousField}
                 );
+
+                // УДАЛЯЕМ из newestLikes если был лайк
+                if (currentLike.status === "Like") {
+                    await PostModel.updateOne(
+                        {_id: new mongoose.Types.ObjectId(postId)},
+                        {$pull: {"extendedLikesInfo.newestLikes": {userId}}}
+                    );
+                }
             }
 
             // Добавляем новый лайк если не "None"
             if (likeStatus !== "None") {
-                await PostLikeModel.create({
+                const newLike = {
                     userId,
-                    postId, // Добавлено postId
-                    login, // НУЖНО ДОБАВИТЬ логин пользователя
+                    postId,
+                    login,
                     status: likeStatus,
-                    createdAt: new Date().toISOString() // Добавлено createdAt
-                });
+                    createdAt: new Date().toISOString()
+                };
+
+                await PostLikeModel.create(newLike);
 
                 // Увеличиваем новый счетчик
                 const newField = likeStatus === "Like"
@@ -66,9 +75,30 @@ export const postLikeRepository = {
                     {_id: new mongoose.Types.ObjectId(postId)},
                     {$inc: newField}
                 );
+
+                // ДОБАВЛЯЕМ в newestLikes если это лайк
+                if (likeStatus === "Like") {
+                    const newestLikeInfo = {
+                        addedAt: newLike.createdAt,
+                        userId: newLike.userId,
+                        login: newLike.login
+                    };
+
+                    await PostModel.updateOne(
+                        {_id: new mongoose.Types.ObjectId(postId)},
+                        {
+                            $push: {
+                                "extendedLikesInfo.newestLikes": {
+                                    $each: [newestLikeInfo],
+                                    $sort: {addedAt: -1},
+                                    $slice: 3 // сохраняем только 3 последних
+                                }
+                            }
+                        }
+                    );
+                }
             }
         } catch (error) {
-            // Логируем ошибку, но не блокируем всю операцию
             console.error("Error updating like status:", error);
             throw error;
         }
