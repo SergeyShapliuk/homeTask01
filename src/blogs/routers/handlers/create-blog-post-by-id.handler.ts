@@ -24,7 +24,7 @@ export async function createBlogPostByIdHandler(
         });
 
         const createdPost = await postsService.findByIdOrFail(createdPostId);
-        const postOutput = mapToPostOutputUtil(createdPost, userId);
+        const postOutput =await mapToPostOutputUtil(createdPost, userId);
 
         res.status(HttpStatus.Created).send(postOutput);
     } catch (e: unknown) {
