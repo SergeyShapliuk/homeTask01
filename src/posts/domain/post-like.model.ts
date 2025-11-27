@@ -17,7 +17,7 @@ const postLikeSchema = new mongoose.Schema<PostLike>({
     userId: {type: String, required: true},
     login: {type: String, required: true},
     postId: {type: String, required: true},
-    status: {type: String, enum: ["Like", "Dislike"], default: "None", required: true},
+    status: {type: String, enum: ["None", "Like", "Dislike"], default: "None", required: true},
     createdAt: {type: String, default: new Date().toISOString()}
 });
 

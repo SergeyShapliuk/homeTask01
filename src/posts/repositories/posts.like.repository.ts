@@ -18,54 +18,59 @@ export const postLikeRepository = {
         return res;
     },
 
-    async updateLikeStatus(postId: string, userId: string, login: string, likeStatus: "Like" | "Dislike" | "None") {
+    async updateLikeStatus(
+        postId: string,
+        userId: string,
+        login: string,
+        likeStatus: "Like" | "Dislike" | "None"
+    ) {
         const current = await PostLikeModel.findOne({userId, postId});
 
-        // Если лайк уже стоит — ничего не менять
-        if (current && likeStatus === "Like") {
+        // Если статус не изменился — ничего не делать
+        if (current?.status === likeStatus) {
             return;
         }
 
-        // Если был лайк — удаляем его
+        // Удаляем предыдущую реакцию если была
         if (current) {
             await PostLikeModel.deleteOne({userId, postId});
 
-            await PostModel.updateOne(
-                {_id: postId},
-                {$inc: {"extendedLikesInfo.likesCount": -1}}
-            );
+            // Уменьшаем счетчик предыдущей реакции
+            if (current.status === "Like") {
+                await PostModel.updateOne(
+                    {_id: postId},
+                    {$inc: {"extendedLikesInfo.likesCount": -1}}
+                );
+            } else if (current.status === "Dislike") {
+                await PostModel.updateOne(
+                    {_id: postId},
+                    {$inc: {"extendedLikesInfo.dislikesCount": -1}}
+                );
+            }
         }
 
-        // Если новый статус = "Like"
-        if (likeStatus === "Like") {
+        // Добавляем новую реакцию если не "None"
+        if (likeStatus !== "None") {
             await PostLikeModel.create({
                 userId,
                 postId,
                 login,
+                status: likeStatus, // ✅ ДОБАВИТЬ статус
                 createdAt: new Date().toISOString()
             });
 
-            await PostModel.updateOne(
-                {_id: postId},
-                {$inc: {"extendedLikesInfo.likesCount": 1}}
-            );
-        }
-
-        // Если новый статус = "Dislike"
-        if (likeStatus === "Dislike") {
-            await PostModel.updateOne(
-                {_id: postId},
-                {$inc: {"extendedLikesInfo.dislikesCount": 1}}
-            );
-        }
-
-        // Если новый статус = None
-        if (likeStatus === "None" && current === null) {
-            // Был dislike
-            await PostModel.updateOne(
-                {_id: postId},
-                {$inc: {"extendedLikesInfo.dislikesCount": -1}}
-            );
+            // Увеличиваем счетчик новой реакции
+            if (likeStatus === "Like") {
+                await PostModel.updateOne(
+                    {_id: postId},
+                    {$inc: {"extendedLikesInfo.likesCount": 1}}
+                );
+            } else if (likeStatus === "Dislike") {
+                await PostModel.updateOne(
+                    {_id: postId},
+                    {$inc: {"extendedLikesInfo.dislikesCount": 1}}
+                );
+            }
         }
     },
 
@@ -83,6 +88,9 @@ export const postLikeRepository = {
         login: string
     }[]> {
         if (!postId) return [];
+        console.log({postId})
+        const likes1 = await PostLikeModel.find({postId})
+        console.log({likes1})
         const likes = await PostLikeModel.find({postId, status: "Like"})
             .sort({createdAt: -1}) // или addedAt, в зависимости от вашей модели
             .limit(3)
