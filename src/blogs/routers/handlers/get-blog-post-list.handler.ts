@@ -32,11 +32,12 @@ export async function getBlogPostListHandler(
         );
         console.log("getBlogPostListHandler1", blogId);
         console.log("getBlogPostListHandler2", queryInput);
-        const blogListOutput = mapToPostListPaginatedOutput(items, {
+        const blogListOutput =await mapToPostListPaginatedOutput(items, {
             pageNumber: queryInput.pageNumber,
             pageSize: queryInput.pageSize,
             totalCount
         }, userId);
+        console.log("getBlogPostListHandler3", blogListOutput);
         res.status(HttpStatus.Ok).send(blogListOutput);
     } catch (e) {
         errorsHandler(e, res);
